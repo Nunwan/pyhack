@@ -7,3 +7,9 @@
 - Un système de mouvement et donc de MAJ de la carte. ATTENTION aux murs qui doivent être imperméables
 - Réfléchir à comment stocker la carte et la position du joueur.
 
+
+
+## Gestion du clavier et de l'interaction.
+
+Le module pynput a l'air de faire l'affaire. Il faut que je demande si n'importe quel module peut être utilisé.
+Il y a également pyhook et pyxhook qui ont l'air pas mal
