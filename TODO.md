@@ -6,7 +6,7 @@
 - Le système qui lit l'entrée clavier
 - Un système de mouvement et donc de MAJ de la carte. ATTENTION aux murs qui doivent être imperméables
 - Réfléchir à comment stocker la carte et la position du joueur.
-
+- Réflechir à n'afficher qu'une partie de la map dès le début dans le but de continuer le projet ensuite
 
 
 ## Gestion du clavier et de l'interaction.
