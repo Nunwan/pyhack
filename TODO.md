@@ -11,5 +11,15 @@
 
 ## Gestion du clavier et de l'interaction.
 
-Le module pynput a l'air de faire l'affaire. Il faut que je demande si n'importe quel module peut être utilisé.
+
+Le module pynput a l'air de faire l'affaire.
 Il y a également pyhook et pyxhook qui ont l'air pas mal
+
+## Gestion de l'affichage.
+
+Le plus simple semble être une matrice de la taile du jeu.
+On peut :
+
+- associer un nombre à un état dans la matrice 0 pas découvert, 1 sol, 2 mur, 3 porte, 4 couloir et *-1* le personnage.
+- On crée un dictionnaire qui a chaque nombre associe sa chaine préféré : " ", ".", "|" ou "-" (à gérer), "#", "@"
+- On affiche en parcourant le dico d'indice la matrice
