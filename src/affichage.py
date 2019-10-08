@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import niveau
+import numpy as np
+car = dict()
+car[0] = " "
+car[1] = "."
+car[2] = "|"
+car[3] = "-"
+car[4] = "#"
+
 
 class Jeu:
     """
@@ -18,4 +26,10 @@ class Jeu:
         """
         Affiche le plateau de jeu
         """
-        pass
+        n,m = self.plateau.shape
+        for i in range(n):
+            for j in range(m):
+                print(car[self.plateau[i][j]])
+
+    def monte(self):
+        print("monte")

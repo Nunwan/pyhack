@@ -8,13 +8,16 @@ Institution : Grenoble INP - ENSIMAG
 Author : BERTIN Robin & Genisson Maxime
 """
 
-
+from keyboard import init_key
+from affichage import Jeu
 def main():
     """
     Main function of the project Pyhack
     """
-    pass
+    jeu = Jeu()
+    init_key(jeu)
 
 
-if __name = "__main__":
+
+if __name__ == "__main__":
     main()
