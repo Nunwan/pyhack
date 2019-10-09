@@ -12,14 +12,14 @@
 ## Gestion du clavier et de l'interaction.
 
 Pynput ne marchait pas.
-pyxhook a l'air de fonctionner (voir sur branche dev).
-On va essayer curses qui est sensé nous faciliter la vie pour beaucoup de choses
+Pyxhook était trop compliqué.
+curses est meilleur et permet deux choses : la gestion des events au clavier + une gestion de l'affichage bien plus simple
+
 
 ## Gestion de l'affichage.
 
-Le plus simple semble être une matrice de la taile du jeu.
-On peut :
+Mieux qu'une matrice :
 
-- associer un nombre à un état dans la matrice 0 pas découvert, 1 sol, 2 mur, 3 porte, 4 couloir et *-1* le personnage.
-- On crée un dictionnaire qui a chaque nombre associe sa chaine préféré : " ", ".", "|" ou "-" (à gérer), "#", "@"
-- On affiche en parcourant le dico d'indice la matrice
+- On crée des salles qui sont décrites par une taille et le point du coin haut gauche
+- On définit une méthode qui affiche une salle qqc avec sol + mur grâce à addstr
+- On génère alors les salles aléatoires et on les affiche avec la méthode. On peut ainsi plus facilement gérer un affichage pas à pas ( c'est le cas de le dire)
