@@ -11,9 +11,9 @@
 
 ## Gestion du clavier et de l'interaction.
 
-
-Le module pynput a l'air de faire l'affaire.
-Il y a également pyhook et pyxhook qui ont l'air pas mal
+Pynput ne marchait pas.
+pyxhook a l'air de fonctionner (voir sur branche dev).
+On va essayer curses qui est sensé nous faciliter la vie pour beaucoup de choses
 
 ## Gestion de l'affichage.
 
