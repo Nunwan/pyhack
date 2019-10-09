@@ -9,17 +9,15 @@ class Salle:
     """
     essai
     """
-    def __init__(self):
+    def __init__(self, position, taille):
         self.deja = 0
-        self.pos = [1,1]
-        self.taille = [2,3]
-
-
-    def introduit(self, mat):
-        pass
-
+        self.pos =  position
+        self.taille = taille
+        self.portes = []  # Les portes sont de bases vides.
 
 def generation(jeu):
+    """
+    """
     salles = []  # A generer aléatoirement
     for salle in salles:
         salle.introduit(jeu.plateau)

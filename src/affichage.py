@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import niveau
+
+
 import numpy as np
-car = dict()
-car[0] = " "
-car[1] = "."
-car[2] = "|"
-car[3] = "-"
-car[4] = "#"
+import curses
+
+
+CAR = dict()
+CAR[0] = " "
+CAR[1] = "."
+CAR[2] = "|"
+CAR[3] = "-"
+CAR[4] = "#"
 
 
 class Jeu:
@@ -19,17 +23,24 @@ class Jeu:
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
-        self.perso = [0,0]
-        self.plateau = np.zeros((20,30))
+        # Initialisation des attributs
+        self.perso = [0, 0]
         self.stop = 0
-    def refresh(self):
+        # Création de la fenêtre
+        self.window = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
+
+    def __del__(self):
         """
-        Affiche le plateau de jeu
+        Destructeur fermant la fenêtre curses
         """
-        n,m = self.plateau.shape
-        for i in range(n):
-            for j in range(m):
-                print(car[self.plateau[i][j]])
+        curses.nocbreak()
+        curses.echo()
+        curses.endwin()
 
     def monte(self):
+        """
+        Fonction d'essai pour monter le personnage
+        """
         print("monte")
