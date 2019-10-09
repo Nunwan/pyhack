@@ -21,7 +21,7 @@ class Jeu:
         """
         self.perso = [0,0]
         self.plateau = np.zeros((20,30))
-
+        self.stop = 0
     def refresh(self):
         """
         Affiche le plateau de jeu

@@ -1,29 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from affichage import Jeu
-from pynput import keyboard
+import pyxhook
 
-def on_press(key):
-    try:
-        if key.char == j:
-            jeu2.descend()
-        elif key.char == 'k':
-            jeu.monte()
-        elif key.char == 'l':
-            jeu.droite()
-        elif key.char == 'l':
-            jeu.gauche()
-    except:
-        if key == "key.esc":
-            jeu.quit()
-
+def on_press(event, jeu):
+    if event.Ascii == 106:
+        jeu.descend()
+    elif event.Ascii == 107:
+        jeu.monte()
+    elif event.Ascii == 108:
+        jeu.droite()
+    elif event.Ascii == 104:
+        jeu.gauche()
+    elif event.Ascii == 27:
+        jeu.stop = 1
 
 def init_key(jeu):
-    global jeu2
-    jeu2 = jeu
-    with keyboard.Listener(
-            on_press = on_press) as listener:
-
-        listener.join()
-
-
+    hookman = pyxhook.HookManager(parameters=True)
+    hookman.KeyDown = on_press
+    hookman.KeyDownParameters = jeu
+    return hookman
