@@ -17,3 +17,5 @@ while True:
     elif c == 'q':
         break
     stdscr.refresh()
+
+curses.close()

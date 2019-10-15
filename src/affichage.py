@@ -8,7 +8,7 @@ import curses
 
 CAR = dict()
 CAR[0] = " "
-CAR[1] = "."
+CAR["SOL"] = "."
 CAR[2] = "|"
 CAR[3] = "-"
 CAR[4] = "#"
