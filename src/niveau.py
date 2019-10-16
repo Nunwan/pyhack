@@ -5,7 +5,7 @@ Module gérant la génération et les opérations sur les
 niveaux du jeu
 """
 
-from jeu import Jeu, CAR
+from jeu import  CAR
 
 class Salle:
     """
@@ -70,12 +70,13 @@ class Niveau:
         self.salles=[]
         self.couloirs=[]
         self.salles.append(Salle((1,2), (10, 20)))
+        self.salles.append(Salle((11,20), (14, 28)))
         self.genere_dico()
 
     def genere_dico(self):
-        self.niveau = dict()
+        self.reminder = dict()
         for s in self.salles:
-            s.genere_dico(self.niveau, s)
+            s.genere_dico(self.reminder, s)
         #for c in self.couloirs:
         #    c.genere_dico(self.niveau, c)
 

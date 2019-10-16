@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from affichage import Jeu
+from jeu import Jeu
 
 def step(jeu):
     """

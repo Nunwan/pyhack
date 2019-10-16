@@ -19,7 +19,7 @@ def main():
     jeu = Jeu()
     niveau1 = Niveau() 
     #niveau1.affiche(jeu)
-    jeu.affiche_perso() 
+    
     
     while not jeu.stop:
         keyboard.step(jeu) 
