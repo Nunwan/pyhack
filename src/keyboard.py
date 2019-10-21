@@ -6,6 +6,12 @@ def step(jeu):
     """
     Fonction lisant le clavier et lançant la bonne
     méthode.
+
+    q : ferme le jeu
+    j : le joueur descend
+    k : il monte
+    h : il va à gauche
+    l : il va à droite
     """
     key = jeu.window.getkey()
     if key == "q":

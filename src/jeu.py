@@ -25,13 +25,14 @@ class Jeu:
         et un personnage en (0,0)
         """
         # Initialisation des attributs
-        self.perso = [7, 8]
-        self.niveau_en_cours = 0
-        self.stop = 0
+        self.perso = [7, 8]  # Coordonnée du personnage
+        self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
+        self.stop = 0  # Variable pour finir le jeu 
         # Création de la fenêtre
         self.window = curses.initscr()
-        curses.noecho()
-        curses.cbreak()
+        curses.noecho()  # N'affiche pas les choses tapées
+        curses.cbreak()  # laisse le buffer vide
+        #  Initialisation des niveaux du jeu
         self.niveaux = [Niveau()]
 
     def affiche_perso(self):
@@ -42,17 +43,17 @@ class Jeu:
             self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self)
         self.window.addstr(self.perso[1], self.perso[0], CAR["PERSO"])
         self.window.refresh()
-        
+
     def reset_perso(self):
         """
-        Méthode affichant la case sur laquelle était le personnage
+        Méthode affichant la case sur laquelle était le personnage avant qu'il bouge
         """
         self.window.addstr(self.perso[1], self.perso[0], CAR["SOL"])
         self.window.refresh()
 
     def fin(self):
         """
-        Destructeur fermant la fenêtre curses
+        'Destructeur' fermant la fenêtre curses
         """
         self.stop = 1
         curses.nocbreak()
