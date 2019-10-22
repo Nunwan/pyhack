@@ -23,3 +23,6 @@ Mieux qu'une matrice :
 - On crée des salles qui sont décrites par une taille et le point du coin haut gauche
 - On définit une méthode qui affiche une salle qqc avec sol + mur grâce à addstr
 - On génère alors les salles aléatoires et on les affiche avec la méthode. On peut ainsi plus facilement gérer un affichage pas à pas ( c'est le cas de le dire)
+
+Pour la génération des salles : 
+https://github.com/adnzzzzZ/blog/issues/7
