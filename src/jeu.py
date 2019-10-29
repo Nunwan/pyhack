@@ -57,7 +57,8 @@ class Jeu:
         """
         Fait un refresh du pad en prenant en compte la caméra plus tard
         """
-        self.pad.refresh(3, 3, 0, 0, 30, 30)
+        cam_haut_x, cam_haut_y = (self.perso[0] //20) * 20, (self.perso[1] // 20) * 20
+        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 20, 20)
 
 
     def fin(self):
