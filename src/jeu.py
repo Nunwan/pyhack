@@ -48,6 +48,15 @@ class Jeu:
         #  Initialisation des niveaux du jeu
         self.niveaux = [Niveau()]
 
+        # Bindings
+
+        self.bindings = dict()
+        self.bindings["j"] = self.descend
+        self.bindings["k"] = self.monte
+        self.bindings["l"] = self.droite
+        self.bindings["h"] = self.gauche
+        self.bindings["q"] = self.fin
+
     def affiche_perso(self):
         """
         Genere dico doit avoir été appelé peut etre ajouté une clause
