@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Module gérant les données du jeu.
+Autant l'affichage que la donnée du personnage chose peut être
+à séparer
+"""
 
-
-import numpy as np
 import curses
 
 
+
+# Dictionnaire de l'affichage
 CAR = dict()
 CAR[0] = " "
 CAR["SOL"] = "."
@@ -13,7 +18,14 @@ CAR["MURV"] = "|"
 CAR["MURH"] = "-"
 CAR["PERSO"] = "@"
 
+# Taille de l'écran d'affichage (pour le moment)
+TAILLE = 50
+
+
 from niveau import Niveau
+
+
+
 
 class Jeu:
     """
@@ -27,7 +39,7 @@ class Jeu:
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
         self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
-        self.stop = 0  # Variable pour finir le jeu 
+        self.stop = 0  # Variable pour finir le jeu
         # Création de la fenêtre
         self.window = curses.initscr()
         self.pad = curses.newpad(1000, 1000)
@@ -55,11 +67,16 @@ class Jeu:
 
     def refresh(self):
         """
-        Fait un refresh du pad en prenant en compte la caméra plus tard
+        Fait un refresh du pad.
+        Ceci crée un système de caméra puisque cela n'affiche qu'une fenetre de 50*25
+        suivant le personnage.
         """
-        cam_haut_x, cam_haut_y = (self.perso[0] //20) * 20, (self.perso[1] // 20) * 20
-        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 20, 20)
-
+        cam_haut_x, cam_haut_y = (self.perso[0] //50) * 50, (self.perso[1] // 25) * 25
+        if cam_haut_x >= 5:
+            cam_haut_x -= 5
+        if cam_haut_y >= 10:  # Ajuste la fenetre pour qu'on voit un peu les éléments précédents
+            cam_haut_y -= 10
+        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
 
     def fin(self):
         """
@@ -69,7 +86,6 @@ class Jeu:
         curses.nocbreak()
         curses.echo()
         curses.endwin()
-
 
     # Fonction de déplacement
     def monte(self):

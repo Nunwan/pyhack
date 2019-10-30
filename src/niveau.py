@@ -28,7 +28,7 @@ class Salle:
             for y in range(self.coin_hgauche[1], self.coin_bdroite[1] +1):
                 jeu.pad.addstr(y, x, CAR["SOL"])
 
-    def affiche_murv(self,jeu):
+    def affiche_murv(self, jeu):
         """
         Méthode affichant les murs verticaux de la salle
         """
@@ -36,7 +36,7 @@ class Salle:
             jeu.pad.addstr(y, self.coin_hgauche[0] - 1, CAR["MURV"])
             jeu.pad.addstr(y, self.coin_bdroite[0] + 1, CAR["MURV"])
 
-    def affiche_murh(self,jeu):
+    def affiche_murh(self, jeu):
         """
         Méthode affichant les murs verticaux de la salle
         """
@@ -44,7 +44,7 @@ class Salle:
             jeu.pad.addstr(self.coin_hgauche[1] - 1, x, CAR["MURH"])
             jeu.pad.addstr(self.coin_bdroite[1] + 1, x, CAR["MURH"])
 
-    def affiche(self,jeu):
+    def affiche(self, jeu):
         """
         Méthode regroupant les méthodes précédentes et affichant toute la salle
         """
@@ -60,7 +60,7 @@ class Salle:
         """
         for x in range(self.coin_hgauche[0], self.coin_bdroite[0] + 1):
             for y in range(self.coin_hgauche[1], self.coin_bdroite[1] + 1):
-                dico[(x,y)] = salle
+                dico[(x, y)] = salle
 
 
 
@@ -74,7 +74,7 @@ class Couloir:
 
     # Méthode d'affichage surement nul, à faire
     def affiche(self):
-        for i in range(len(self.points) -1):
+        for _ in range(len(self.points) -1):
             pass
 
     def genere_dico(self, dico, salle):
@@ -89,10 +89,10 @@ class Niveau:
         """
         Le constructeur construit un niveau vide de salles et de couloir
         """
-        self.salles=[]
-        self.couloirs=[]
-        self.salles.append(Salle((1,2), (10, 20)))
-        self.salles.append(Salle((11,20), (14, 28)))
+        self.salles = []
+        self.couloirs = []
+        self.salles.append(Salle((1, 2), (10, 20)))
+        self.salles.append(Salle((11, 20), (14, 28)))
         self.genere_dico()
 
     def genere_dico(self):
@@ -104,5 +104,3 @@ class Niveau:
             salle.genere_dico(self.reminder, salle)
         #for c in self.couloirs:
         #    c.genere_dico(self.niveau, c)
-
-
