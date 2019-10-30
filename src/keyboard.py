@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from jeu import Jeu
-
+"""
+Module gérant le clavier et les intéractions avec celui-ci
+"""
 def step(jeu):
     """
     Fonction lisant le clavier et lançant la bonne
