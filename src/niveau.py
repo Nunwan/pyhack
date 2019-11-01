@@ -5,7 +5,14 @@ Module gérant la génération et les opérations sur les
 niveaux du jeu
 """
 
-from jeu import  CAR
+# Dictionnaire de l'affichage
+CAR = dict()
+CAR[0] = " "
+CAR["SOL"] = "."
+CAR["MURV"] = "|"
+CAR["MURH"] = "-"
+CAR["PERSO"] = "@"
+
 
 class Salle:
     """

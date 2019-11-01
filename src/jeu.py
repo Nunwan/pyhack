@@ -8,21 +8,7 @@ Autant l'affichage que la donnée du personnage chose peut être
 
 import curses
 
-
-
-# Dictionnaire de l'affichage
-CAR = dict()
-CAR[0] = " "
-CAR["SOL"] = "."
-CAR["MURV"] = "|"
-CAR["MURH"] = "-"
-CAR["PERSO"] = "@"
-
-# Taille de l'écran d'affichage (pour le moment)
-TAILLE = 50
-
-
-from niveau import Niveau
+from niveau import Niveau, CAR
 
 
 
@@ -36,13 +22,14 @@ class Jeu:
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
+        self.taille = 1000
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
         self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
         self.stop = 0  # Variable pour finir le jeu
         # Création de la fenêtre
         self.window = curses.initscr()
-        self.pad = curses.newpad(1000, 1000)
+        self.pad = curses.newpad(self.taille, self.taille)
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
         #  Initialisation des niveaux du jeu
