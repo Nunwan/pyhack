@@ -7,17 +7,17 @@ from random import randint
 from niveau import Salle
 #from jeu import Jeu
 
-MAX_TAILLE = 25
+MAX_TAILLE = 15
 MIN_TAILLE = 4
 
 def intersection(salle1, salle2):
     """
     Fonction renvoyant si les deux salles s'intersectent.
     """
-    a = salle1.coin_hgauche[0] - 1 > salle2.coin_bdroite[0]
-    b = salle1.coin_bdroite[0] + 1 < salle2.coin_hgauche[0]
-    c = salle1.coin_bdroite[1] + 1 < salle2.coin_hgauche[1]
-    d = salle1.coin_hgauche[1] - 1 > salle2.coin_bdroite[1]
+    a = salle1.coin_hgauche[0] - 1 > salle2.coin_bdroite[0] + 1
+    b = salle1.coin_bdroite[0] + 1 < salle2.coin_hgauche[0] - 1
+    c = salle1.coin_bdroite[1] + 1 < salle2.coin_hgauche[1] - 1
+    d = salle1.coin_hgauche[1] - 1 > salle2.coin_bdroite[1] + 1
     if not(a or b or c or d):
         return True
     return False
@@ -41,6 +41,7 @@ def generate_dumb(jeu, number):
         jeu.niveaux[jeu.niveau_en_cours].salles.append(r)
         if j > pas:
             return 0
+    # Placement du joueur initialement
     x_init = jeu.niveaux[jeu.niveau_en_cours].salles[0].coin_hgauche[0] + 2
     y_init = jeu.niveaux[jeu.niveau_en_cours].salles[0].coin_hgauche[1] + 3
     jeu.perso = [x_init, y_init]
@@ -52,19 +53,3 @@ def a_une_intersection(salle, niveau):
         if intersection(salle1, salle) or intersection(salle, salle1):
             return True
     return False
-
-
-
-def deplace(niveau):
-    for indice, salle in enumerate(niveau.salles):
-        i = 0
-        x = randint(-1, 1)
-        y = randint(-1, 1)
-        while i < 100 and a_une_intersection(indice, niveau):
-            salle.coin_bdroite[0] += x
-            salle.coin_hgauche[0] += x
-            salle.coin_bdroite[1] += y
-            salle.coin_hgauche[1] += y
-        if i == 100:
-            return 0
-    return 1

@@ -82,6 +82,12 @@ class Jeu:
         curses.echo()
         curses.endwin()
 
+    def step(self):
+        key = self.window.getkey()
+        if key in self.bindings:
+            self.bindings[key]()
+
+
     # Fonction de déplacement
     def monte(self):
         """
@@ -109,6 +115,7 @@ class Jeu:
         if (self.perso[0] - 1, self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
             self.perso[0] -= 1
         self.affiche_perso()
+
 
     def droite(self):
         """
