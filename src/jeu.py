@@ -12,7 +12,6 @@ from niveau import Niveau, CAR
 
 
 
-
 class Jeu:
     """
     Classe gérant le jeu dans sa généralité
@@ -22,7 +21,7 @@ class Jeu:
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
-        self.taille = 1000
+        self.taille = 100
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
         self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
@@ -33,8 +32,8 @@ class Jeu:
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
         #  Initialisation des niveaux du jeu
-        self.niveaux = [Niveau()]
 
+        self.niveaux = [Niveau()]
         # Bindings
 
         self.bindings = dict()
@@ -43,6 +42,9 @@ class Jeu:
         self.bindings["l"] = self.droite
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
+
+    def affiche(self):
+        self.niveaux[self.niveau_en_cours].affiche(self)
 
     def affiche_perso(self):
         """
@@ -67,11 +69,8 @@ class Jeu:
         Ceci crée un système de caméra puisque cela n'affiche qu'une fenetre de 50*25
         suivant le personnage.
         """
-        cam_haut_x, cam_haut_y = (self.perso[0] //50) * 50, (self.perso[1] // 25) * 25
-        if cam_haut_x >= 5:
-            cam_haut_x -= 5
-        if cam_haut_y >= 10:  # Ajuste la fenetre pour qu'on voit un peu les éléments précédents
-            cam_haut_y -= 10
+        cam_haut_x = self.perso[0] - 18
+        cam_haut_y = self.perso[1] - 10
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
 
     def fin(self):

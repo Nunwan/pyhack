@@ -5,6 +5,8 @@ Module gérant la génération et les opérations sur les
 niveaux du jeu
 """
 
+from random import randint
+
 # Dictionnaire de l'affichage
 CAR = dict()
 CAR[0] = " "
@@ -13,6 +15,8 @@ CAR["MURV"] = "|"
 CAR["MURH"] = "-"
 CAR["PERSO"] = "@"
 
+MAX_TAILLE = 25
+MIN_TAILLE = 4
 
 class Salle:
     """
@@ -92,14 +96,14 @@ class Niveau:
     """
     Classe représentant un niveau du jeu
     """
+    import generate
     def __init__(self):
         """
         Le constructeur construit un niveau vide de salles et de couloir
         """
         self.salles = []
         self.couloirs = []
-        self.salles.append(Salle((1, 2), (10, 20)))
-        self.salles.append(Salle((11, 20), (14, 28)))
+        self.salles = []
         self.genere_dico()
 
     def genere_dico(self):
@@ -111,3 +115,18 @@ class Niveau:
             salle.genere_dico(self.reminder, salle)
         #for c in self.couloirs:
         #    c.genere_dico(self.niveau, c)
+    def affiche(self, jeu):
+        for salle in self.salles:
+            salle.affiche(jeu)
+
+
+
+def intersection(salle1, salle2):
+    """
+    Fonction renvoyant si les deux salles s'intersectent.
+    """
+    if salle1.coin_hgauche[0] <= salle2.coin_hgauche[0] <= salle1.coin_bdroite[0] and salle1.coin_bdroite[1] <= salle2.coin_hgauche[1] <= salle1.coin_bdroite[1]:
+        return True
+    if salle2.coin_hgauche[0] <= salle1.coin_hgauche[0] <= salle2.coin_bdroite[0] and salle2.coin_bdroite[1] <= salle1.coin_hgauche[1] <= salle2.coin_bdroite[1]:
+        return True
+    return False
