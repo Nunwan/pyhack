@@ -3,7 +3,7 @@ Module gérant la génération des niveaux
 """
 
 
-from random import randint
+from random import randint, choice
 from niveau import Salle
 #from jeu import Jeu
 
@@ -38,12 +38,13 @@ def generate_dumb(jeu, number):
             if coin_bdroite[0] == jeu.taille or coin_bdroite[1] == jeu.taille:
                 r = None
             r = Salle(coin_hgauche, coin_bdroite)
-        jeu.niveaux[jeu.niveau_en_cours].salles.append(r)
+        jeu.niveaux[jeu.niveau_en_cours].salles[r.milieu] = r
         if j > pas:
             return 0
     # Placement du joueur initialement
-    x_init = jeu.niveaux[jeu.niveau_en_cours].salles[0].coin_hgauche[0] + 2
-    y_init = jeu.niveaux[jeu.niveau_en_cours].salles[0].coin_hgauche[1] + 3
+    salle = choice(list(jeu.niveaux[jeu.niveau_en_cours].salles))
+    x_init = salle[0] + 2
+    y_init = salle[1] + 3
     jeu.perso = [x_init, y_init]
     return 1
 
@@ -53,3 +54,9 @@ def a_une_intersection(salle, niveau):
         if intersection(salle1, salle) or intersection(salle, salle1):
             return True
     return False
+
+
+def liste_milieu(jeu):
+    milieux = [milieu for milieu in jeu.niveaux[jeu.niveau_en_cours].salles.keys()]
+    return milieux
+
