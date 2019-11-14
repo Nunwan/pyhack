@@ -5,7 +5,6 @@ Module gérant la génération des niveaux
 
 from random import randint, choice
 from niveau import Salle, Couloir
-from scipy.spatial import Delaunay
 #from jeu import Jeu
 
 MAX_TAILLE = 15

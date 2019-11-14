@@ -14,6 +14,7 @@ CAR["SOL"] = "."
 CAR["MURV"] = "|"
 CAR["MURH"] = "-"
 CAR["PERSO"] = "@"
+CAR["COULOIR"] = "#"
 
 MAX_TAILLE = 25
 MIN_TAILLE = 4
@@ -85,21 +86,21 @@ class Salle:
 def milieu_deux(point1, point2):
     x1, y1 = point1
     x2, y2 = point2
-    returne (x1 + x2) // 2, (y1 + y2)//2
+    return (x1 + x2) // 2, (y1 + y2)//2
 
 
-def plus_haute(salle1, salle2):
+def plus_haute_basse(salle1, salle2):
     if salle1.milieu()[1] <= salle2.milieu()[1]:
-        return salle1
+        return salle1, salle2
     else:
-        return salle2
+        return salle2, salle1
 
 
-def plus_gauche(salle1, salle2):
+def plus_gauche_droite(salle1, salle2):
     if salle1.milieu()[0] <= salle2.milieu()[0]:
-        return salle1
+        return salle1, salle2
     else:
-        return salle2
+        return salle2, salle1
 
 
 class Couloir:
@@ -112,16 +113,35 @@ class Couloir:
 
 
     # Méthode d'affichage surement nul, à faire
-    def affiche(self):
-        pass
+    def affiche(self, jeu):
+        if (jeu.perso[0] + 1, jeu.perso[1]) in jeu.reminder:
+            jeu.addstr(jeu.perso[1], jeu.perso[0] + 1, CAR["COULOIR"])
+        if (jeu.perso[0] - 1, jeu.perso[1]) in jeu.reminder:
+            jeu.addstr(jeu.perso[1], jeu.perso[0] - 1, CAR["COULOIR"])
+        if (jeu.perso[0], jeu.perso[1] + 1) in jeu.reminder:
+            jeu.addstr(jeu.perso[1] + 1, jeu.perso[0], CAR["COULOIR"])
+        if (jeu.perso[0], jeu.perso[1] - 1) in jeu.reminder:
+            jeu.addstr(jeu.perso[1] - 1, jeu.perso[0], CAR["COULOIR"])
+
 
     def genere_dico(self, dico):
         if len(dico) == 0:
             self.salle1.genere_dico(dico)
             self.salle2.genere_dico(dico)
         mid_x, mid_y = milieu_deux(self.salle1.milieu(), self.salle2.milieu())
+        haute, basse = plus_haute_basse(self.salle1, self.salle2)
+        gauche, droite = plus_gauche_droite(self.salle1, self.salle2)
         if self.salle1.coin_hgauche[0] <= mid_x <= self.salle1.coin_bdroite[0]:
-            pass 
+            for y in range(haute.coin_bdroite[1] + 1, basse.coin_hgauche[1]):
+                dico[(mid_x, y)] = self
+        if self.salle1.coin_hgauche[1] <= mid_y <= self.salle1.coin_bdroite[1]:
+            for x in range(gauche.coin_bdroite[0] + 1, droite.coin_hgauche[0]):
+                dico[(x, mid_y)] = self
+        else:
+            for x in range(gauche.coin_bdroite[0] + 1, mid_x + 1):
+                dico[(x, mid_y)] = self
+            for y in range(haute.coin_bdroite[1] + 1, mid_y):
+                dico[(mid_x, mid_y)] = self
 
 
 class Niveau:
