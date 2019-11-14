@@ -13,4 +13,5 @@ def vertices_aleatoire(nb):
         L.append(point_aleatoire(990))
     return L
 
-
+L = vertices_aleatoire(50)
+print(Delaunay(L).simplices)

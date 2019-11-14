@@ -24,7 +24,7 @@ def main():
     jeu.monte()
     jeu.refresh()
     while not jeu.stop:
-        jeu.step()
+        jeu.step() 
 
 if __name__ == "__main__":
     main()

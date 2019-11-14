@@ -82,22 +82,46 @@ class Salle:
                 dico[(x, y)] = salle
 
 
+def milieu_deux(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    returne (x1 + x2) // 2, (y1 + y2)//2
+
+
+def plus_haute(salle1, salle2):
+    if salle1.milieu()[1] <= salle2.milieu()[1]:
+        return salle1
+    else:
+        return salle2
+
+
+def plus_gauche(salle1, salle2):
+    if salle1.milieu()[0] <= salle2.milieu()[0]:
+        return salle1
+    else:
+        return salle2
+
 
 class Couloir:
     """
     Classe représentant les couloirs
     """
-    def __init__(self, points):
-        self.points = points
+    def __init__(self, salle1, salle2):
+        self.salle1 = salle1
+        self.salle2 = salle2
 
 
     # Méthode d'affichage surement nul, à faire
     def affiche(self):
-        for _ in range(len(self.points) -1):
-            pass
-
-    def genere_dico(self, dico, salle):
         pass
+
+    def genere_dico(self, dico):
+        if len(dico) == 0:
+            self.salle1.genere_dico(dico)
+            self.salle2.genere_dico(dico)
+        mid_x, mid_y = milieu_deux(self.salle1.milieu(), self.salle2.milieu())
+        if self.salle1.coin_hgauche[0] <= mid_x <= self.salle1.coin_bdroite[0]:
+            pass 
 
 
 class Niveau:

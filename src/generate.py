@@ -4,7 +4,8 @@ Module gérant la génération des niveaux
 
 
 from random import randint, choice
-from niveau import Salle
+from niveau import Salle, Couloir
+from scipy.spatial import Delaunay
 #from jeu import Jeu
 
 MAX_TAILLE = 15
@@ -59,4 +60,16 @@ def a_une_intersection(salle, niveau):
 def liste_milieu(jeu):
     milieux = [milieu for milieu in jeu.niveaux[jeu.niveau_en_cours].salles.keys()]
     return milieux
+
+def delaunay(jeu):
+    milieux = liste_milieu(jeu)
+    triangles = Delaunay(milieux)
+    couloirs = jeu.niveaux[jeu.niveau_en_cours].couloirs
+    for p1, p2, p3 in triangles:
+        if (p1, p2) not in couloirs and (p2, p1) not in couloirs:
+            couloirs[(p1, p2)] = Couloir(milieux[p1], milieux[p2])
+        if (p3, p2) not in couloirs and (p2, p3) not in couloirs:
+            couloirs[(p2, p3)] = Couloir(milieux[p2], milieux[p3])
+        if (p1, p3) not in couloirs and (p3, p1) not in couloirs:
+            couloirs[(p1, p3)] = Couloir(milieux[p1], milieux[p3])
 
