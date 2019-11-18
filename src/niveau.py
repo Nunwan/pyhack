@@ -15,6 +15,7 @@ CAR["MURV"] = "|"
 CAR["MURH"] = "-"
 CAR["PERSO"] = "@"
 CAR["COULOIR"] = "#"
+CAR["PORTE"] = "/"
 
 MAX_TAILLE = 25
 MIN_TAILLE = 4
@@ -56,31 +57,44 @@ class Salle:
             jeu.pad.addstr(self.coin_hgauche[1] - 1, x, CAR["MURH"])
             jeu.pad.addstr(self.coin_bdroite[1] + 1, x, CAR["MURH"])
 
-    def affiche(self, jeu):
+    def affiche(self, jeu, x, y, passe):
         """
         Méthode regroupant les méthodes précédentes et affichant toute la salle
         """
-        self.affiche_sol(jeu)
-        self.affiche_murh(jeu)
-        self.affiche_murv(jeu)
+        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+        if passe < 2:
+            self.affiche_sol(jeu)
+            self.affiche_murh(jeu)
+            self.affiche_murv(jeu)
+            jeu.refresh()
+            if (x + 1, y) in reminder:
+                reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
+            if (x - 1, y) in reminder:
+                reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
+            if (x, y + 1) in reminder:
+                reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
+            if (x, y - 1) in reminder:
+                reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
+        for porte in self.portes:
+            porte.affiche(jeu, porte.x, porte.y, passe + 1)
         jeu.refresh()
 
     def milieu(self):
         """
         Renvoie le milieu de la salle
         """
-        x_milieu = (self.coin_bdroite[0] - self.coin_hgauche[0])//2
-        y_milieu = (self.coin_bdroite[1] - self.coin_hgauche[1])//2
+        x_milieu = (self.coin_bdroite[0] + self.coin_hgauche[0])//2
+        y_milieu = (self.coin_bdroite[1] + self.coin_hgauche[1])//2
         return (x_milieu, y_milieu)
 
-    def genere_dico(self, dico, salle):
+    def genere_dico(self, dico):
         """
         Génère le dico appelé par la méthode Niveau.genere_dico.
         Met la salle en tous les points la composant.
         """
         for x in range(self.coin_hgauche[0], self.coin_bdroite[0] + 1):
             for y in range(self.coin_hgauche[1], self.coin_bdroite[1] + 1):
-                dico[(x, y)] = salle
+                dico[(x, y)] = self
 
 
 def milieu_deux(point1, point2):
@@ -113,16 +127,19 @@ class Couloir:
 
 
     # Méthode d'affichage surement nul, à faire
-    def affiche(self, jeu):
-        if (jeu.perso[0] + 1, jeu.perso[1]) in jeu.reminder:
-            jeu.addstr(jeu.perso[1], jeu.perso[0] + 1, CAR["COULOIR"])
-        if (jeu.perso[0] - 1, jeu.perso[1]) in jeu.reminder:
-            jeu.addstr(jeu.perso[1], jeu.perso[0] - 1, CAR["COULOIR"])
-        if (jeu.perso[0], jeu.perso[1] + 1) in jeu.reminder:
-            jeu.addstr(jeu.perso[1] + 1, jeu.perso[0], CAR["COULOIR"])
-        if (jeu.perso[0], jeu.perso[1] - 1) in jeu.reminder:
-            jeu.addstr(jeu.perso[1] - 1, jeu.perso[0], CAR["COULOIR"])
-
+    def affiche(self, jeu, x, y, passe):
+        jeu.pad.addstr(y, x, CAR["COULOIR"])
+        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+        if passe < 2:
+            if (x + 1, y) in reminder:
+                reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1 )
+            if (x - 1, y) in reminder:
+                reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
+            if (x, y + 1) in reminder:
+                reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
+            if (x, y - 1) in reminder:
+                reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
+        jeu.refresh()
 
     def genere_dico(self, dico):
         if len(dico) == 0:
@@ -132,28 +149,73 @@ class Couloir:
         haute, basse = plus_haute_basse(self.salle1, self.salle2)
         gauche, droite = plus_gauche_droite(self.salle1, self.salle2)
         if self.salle1.coin_hgauche[0] <= mid_x <= self.salle1.coin_bdroite[0]:
-            for y in range(haute.coin_bdroite[1] + 1, basse.coin_hgauche[1]):
-                dico[(mid_x, y)] = self
+            porte1 = Porte(mid_x, haute.coin_bdroite[1] + 1)
+            porte2 = Porte(mid_x, basse.coin_hgauche[1] - 1)
+            dico[(mid_x, haute.coin_bdroite[1] + 1)] = porte1
+            dico[(mid_x, haute.coin_bdroite[1] + 1)] = porte2
+            haute.portes.append(porte1)
+            basse.portes.append(porte2)
+            for y in range(haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] - 1):
+                if (mid_x, y) not in dico:
+                    dico[(mid_x, y)] = self
         if self.salle1.coin_hgauche[1] <= mid_y <= self.salle1.coin_bdroite[1]:
-            for x in range(gauche.coin_bdroite[0] + 1, droite.coin_hgauche[0]):
-                dico[(x, mid_y)] = self
+            porte1 = Porte(gauche.coin_bdroite[0] + 1, mid_y)
+            porte2 = Porte(droite.coin_hgauche[0] - 1, mid_y)
+            dico[(gauche.coin_bdroite[0] + 1, mid_y)] = porte1
+            dico[(droite.coin_hgauche[0] - 1, mid_y)] = porte2
+            gauche.portes.append(porte1)
+            droite.portes.append(porte2)
+            for x in range(gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1):
+                if (x, mid_y) not in dico:
+                    dico[(x, mid_y)] = self
         else:
-            for x in range(gauche.coin_bdroite[0] + 1, mid_x + 1):
-                dico[(x, mid_y)] = self
-            for y in range(haute.coin_bdroite[1] + 1, mid_y):
-                dico[(mid_x, mid_y)] = self
+            porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
+            if gauche is basse:
+                porte2 = Porte(droite.milieu()[0], droite.coin_bdroite[1] + 1)
+            else:
+                porte2 = Porte(droite.milieu()[0], droite.coin_hgauche[1] - 1)
+
+            dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
+            dico[(droite.milieu()[0], droite.coin_bdroite[1] + 1)] = porte2
+            gauche.portes.append(porte1)
+            droite.portes.append(porte2)
+            for x in range(gauche.coin_bdroite[0] + 2, droite.milieu()[0] + 1):
+                if (x, gauche.milieu()[1]) not in dico:
+                    dico[(x, gauche.milieu()[1])] = self
+            if gauche is basse:
+                for y in range(droite.coin_bdroite[1] + 2, gauche.milieu()[1] + 1):
+                    if (droite.milieu()[0], y) not in dico:
+                        dico[(droite.milieu()[0], y)] = self
+            else:
+                for y in range(gauche.milieu()[1], droite.coin_bdroite[1] - 1):
+                    if (droite.milieu()[0], y) not in dico:
+                        dico[(droite.milieu()[0], y)] = self
+
+class Porte:
+    """
+    Classe représentant une porte
+    """
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def affiche(self, jeu, x, y, passe):
+        jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
+        jeu.refresh()
+
+
 
 
 class Niveau:
     """
     Classe représentant un niveau du jeu
     """
-    import generate
+    #import generate
     def __init__(self):
         """
         Le constructeur construit un niveau vide de salles et de couloir
         """
-        self.couloirs = []
+        self.couloirs = dict() 
         self.salles = dict()
         self.genere_dico()
 
@@ -162,11 +224,14 @@ class Niveau:
         Genere un dico tel que dico[(i,j)] = l'objet voulu : salle couloir etc ... en le point i,j
         """
         self.reminder = dict()
-        for salle in self.salles:
-            salle.genere_dico(self.reminder, salle)
-        #for c in self.couloirs:
-        #    c.genere_dico(self.niveau, c)
-
+        for salle in self.salles.values():
+            salle.genere_dico(self.reminder)
+        file = open("log.txt", 'w')
+        for c in self.couloirs.values():
+            c.genere_dico(self.reminder)
+            file.write("{}, {} -> {}, {} \n".format(*c.salle1.milieu(), *c.salle2.milieu()))
+        file.write(str(self.reminder))
+        file.close()
     def affiche(self, jeu):
         for salle in self.salles:
             salle.affiche(jeu)

@@ -31,6 +31,7 @@ class Jeu:
         self.pad = curses.newpad(self.taille, self.taille)
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
+        curses.curs_set(0)
         #  Initialisation des niveaux du jeu
 
         self.niveaux = [Niveau()]
@@ -42,6 +43,7 @@ class Jeu:
         self.bindings["l"] = self.droite
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
+        
 
     def affiche(self):
         self.niveaux[self.niveau_en_cours].affiche(self)
@@ -52,7 +54,7 @@ class Jeu:
         Méthode affichant le personnage là où il est
         """
         if (self.perso[0], self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
-            self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self)
+            self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self, self.perso[0], self.perso[1], 0)
         self.pad.addstr(self.perso[1], self.perso[0], CAR["PERSO"])
         self.refresh()
 
@@ -69,8 +71,9 @@ class Jeu:
         Ceci crée un système de caméra puisque cela n'affiche qu'une fenetre de 50*25
         suivant le personnage.
         """
-        cam_haut_x = self.perso[0] - 18
-        cam_haut_y = self.perso[1] - 10
+        cam_haut_x = max(self.perso[0] - 18, 0)
+        cam_haut_y = max(self.perso[1] - 10, 0)
+        #self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
 
     def fin(self):

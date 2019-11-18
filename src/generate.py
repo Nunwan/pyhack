@@ -5,6 +5,7 @@ Module gérant la génération des niveaux
 
 from random import randint, choice
 from niveau import Salle, Couloir
+from scipy.spatial import Delaunay
 #from jeu import Jeu
 
 MAX_TAILLE = 15
@@ -38,19 +39,19 @@ def generate_dumb(jeu, number):
             if coin_bdroite[0] == jeu.taille or coin_bdroite[1] == jeu.taille:
                 r = None
             r = Salle(coin_hgauche, coin_bdroite)
-        jeu.niveaux[jeu.niveau_en_cours].salles[r.milieu] = r
+        x_mid, y_mid = r.milieu()
+        jeu.niveaux[jeu.niveau_en_cours].salles[(x_mid, y_mid)] = r
         if j > pas:
             return 0
     # Placement du joueur initialement
-    salle = choice(list(jeu.niveaux[jeu.niveau_en_cours].salles))
-    x_init = salle[0] + 2
-    y_init = salle[1] + 3
-    jeu.perso = [x_init, y_init]
+    salle = choice(list(jeu.niveaux[jeu.niveau_en_cours].salles.values()))
+    x_init, y_init = salle.milieu()
+    jeu.perso = [x_init + 2, y_init + 2]
     return 1
 
 
 def a_une_intersection(salle, niveau):
-    for salle1 in niveau.salles:
+    for salle1 in niveau.salles.values():
         if intersection(salle1, salle) or intersection(salle, salle1):
             return True
     return False
@@ -62,13 +63,13 @@ def liste_milieu(jeu):
 
 def delaunay(jeu):
     milieux = liste_milieu(jeu)
-    triangles = Delaunay(milieux)
+    triangles = Delaunay(milieux).simplices
     couloirs = jeu.niveaux[jeu.niveau_en_cours].couloirs
+    salles = jeu.niveaux[jeu.niveau_en_cours].salles
     for p1, p2, p3 in triangles:
         if (p1, p2) not in couloirs and (p2, p1) not in couloirs:
-            couloirs[(p1, p2)] = Couloir(milieux[p1], milieux[p2])
+            couloirs[(p1, p2)] = Couloir(salles[milieux[p1]], salles[milieux[p2]])
         if (p3, p2) not in couloirs and (p2, p3) not in couloirs:
-            couloirs[(p2, p3)] = Couloir(milieux[p2], milieux[p3])
+            couloirs[(p2, p3)] = Couloir(salles[milieux[p2]], salles[milieux[p3]])
         if (p1, p3) not in couloirs and (p3, p1) not in couloirs:
-            couloirs[(p1, p3)] = Couloir(milieux[p1], milieux[p3])
-
+            couloirs[(p1, p3)] = Couloir(salles[milieux[p1]], salles[milieux[p3]])
