@@ -7,9 +7,10 @@ Autant l'affichage que la donnée du personnage chose peut être
 """
 
 import curses
-
+import os
 from niveau import Niveau, CAR
 
+ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
 
 class Jeu:
@@ -74,10 +75,16 @@ class Jeu:
         Ceci crée un système de caméra puisque cela n'affiche qu'une fenetre de 50*25
         suivant le personnage.
         """
-        cam_haut_x = max(self.perso[0] - 18, 0)
-        cam_haut_y = max(self.perso[1] - 10, 0)
+        raw = min(int(ROWS), 25)
+        column = min(int(COLUMNS), 50)
+        cam_haut_y = max(self.perso[1] - 18, 0)
+        cam_haut_x = max(self.perso[0] - 15, 0)
+        if raw < 25:
+            cam_haut_y = max(self.perso[1] - 4, 0)
+        if column < 50:
+            cam_haut_x = max(self.perso[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
-        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
+        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
 
     def fin(self):
         """
