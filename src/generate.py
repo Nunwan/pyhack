@@ -51,6 +51,10 @@ def generate_dumb(jeu, number):
 
 
 def a_une_intersection(salle, niveau):
+    """
+    Renvoie le boléen la salle a une intersection avec une des
+    salles présentes dans le niveau
+    """
     for salle1 in niveau.salles.values():
         if intersection(salle1, salle) or intersection(salle, salle1):
             return True
@@ -58,10 +62,17 @@ def a_une_intersection(salle, niveau):
 
 
 def liste_milieu(jeu):
-    milieux = [milieu for milieu in jeu.niveaux[jeu.niveau_en_cours].salles.keys()]
-    return milieux
+    """
+    Renvoie la liste des milieux de toutes les salles.
+    """
+    return  [milieu for milieu in jeu.niveaux[jeu.niveau_en_cours].salles.keys()]
 
 def delaunay(jeu):
+    """
+    Applique l'algorithme de Delaunay aux milieux des salles pour avoir une triangulation
+    optimale.
+    Rentre ensuite les couloirs dans le dico prévu dans la classe niveau
+    """
     milieux = liste_milieu(jeu)
     triangles = Delaunay(milieux).simplices
     couloirs = jeu.niveaux[jeu.niveau_en_cours].couloirs

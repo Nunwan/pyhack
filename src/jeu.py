@@ -45,6 +45,10 @@ class Jeu:
         self.bindings["q"] = self.fin
 
     def affiche(self):
+        """
+        Permet d'afficher le niveau en cours.
+        Obsolete.
+        """
         self.niveaux[self.niveau_en_cours].affiche(self)
 
     def affiche_perso(self):
@@ -72,7 +76,7 @@ class Jeu:
         """
         cam_haut_x = max(self.perso[0] - 18, 0)
         cam_haut_y = max(self.perso[1] - 10, 0)
-        #self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
+        # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
 
     def fin(self):
@@ -85,6 +89,9 @@ class Jeu:
         curses.endwin()
 
     def step(self):
+        """
+        Fonction appelé par la boucle de jeu pour lire le clavier
+        """
         key = self.window.getkey()
         if key in self.bindings:
             self.bindings[key]()

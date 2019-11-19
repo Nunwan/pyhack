@@ -32,7 +32,7 @@ class Salle:
         self.coin_bdroite = coin_bdroite
         self.coin_hgauche = coin_hgauche
         self.portes = []  # Les portes sont de bases vides.
-        self.CAR = "."
+        self.CAR = "."  # caractère du sol d'une salle
 
     def affiche_sol(self, jeu):
         """
@@ -61,6 +61,7 @@ class Salle:
     def affiche(self, jeu, x, y, passe):
         """
         Méthode regroupant les méthodes précédentes et affichant toute la salle
+        avec une champ de vision de 2 cases adjacentes.
         """
         reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
         if passe < 2:
@@ -98,16 +99,26 @@ class Salle:
                 dico[(x, y)] = self
 
     def place_porte(self, dico):
+        """
+        Fonction additionelle mettant dans le dico de rappel
+        toutes les portes de toutes les salles.
+        """
         for porte in self.portes:
             dico[(porte.x, porte.y)] = porte
 
 def milieu_deux(point1, point2):
+    """
+    Renvoie le point milieu de 2 points
+    """
     x1, y1 = point1
     x2, y2 = point2
     return (x1 + x2) // 2, (y1 + y2)//2
 
 
 def plus_haute_basse(salle1, salle2):
+    """
+    Renvoie la ssalle la plus haute et la plus basse
+    """
     if salle1.milieu()[1] <= salle2.milieu()[1]:
         return salle1, salle2
     else:
@@ -115,6 +126,9 @@ def plus_haute_basse(salle1, salle2):
 
 
 def plus_gauche_droite(salle1, salle2):
+    """
+    Renvoie la salle la plus à gauche puis la plus à droite
+    """
     if salle1.milieu()[0] <= salle2.milieu()[0]:
         return salle1, salle2
     else:
@@ -126,12 +140,19 @@ class Couloir:
     Classe représentant les couloirs
     """
     def __init__(self, salle1, salle2):
+        """
+        La classe a comme attributs principaux : les salles qu'elle joint
+        """
         self.salle1 = salle1
         self.salle2 = salle2
         self.CAR = "#"
 
-    # Méthode d'affichage surement nul, à faire
     def affiche(self, jeu, x, y, passe):
+        """
+        Prend le jeu en argument et affiche dans le jeu le couloir
+        en x,y et regarde ce qu'il y a autour dans un champ de vision de
+        2
+        """
         jeu.pad.addstr(y, x, CAR["COULOIR"])
         reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
         if passe < 2:
@@ -146,6 +167,10 @@ class Couloir:
         jeu.refresh()
 
     def genere_dico(self, dico):
+        """
+        Genere le dico pour un couloir :
+        Il génere le couloir + toutes les portes utiles au parcours du couloir.
+        """
         if len(dico) == 0:
             self.salle1.genere_dico(dico)
             self.salle2.genere_dico(dico)
@@ -246,11 +271,17 @@ class Porte:
     Classe représentant une porte
     """
     def __init__(self, x, y):
+        """
+        Les attributs sont les coordonées de la porte et son caractère d'affichage
+        """
         self.x = x
         self.y = y
         self.CAR = "/"
 
     def affiche(self, jeu, x, y, passe):
+        """
+        Méthode affichant la porte
+        """
         jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
         jeu.refresh()
 
@@ -266,7 +297,7 @@ class Niveau:
         """
         Le constructeur construit un niveau vide de salles et de couloir
         """
-        self.couloirs = dict() 
+        self.couloirs = dict()
         self.salles = dict()
         self.genere_dico()
 
@@ -293,9 +324,10 @@ class Niveau:
             salle.place_porte(self.reminder)
 
 
-
     def affiche(self, jeu):
+        """
+        Affiche un niveau.
+        Obsolete
+        """
         for salle in self.salles:
             salle.affiche(jeu)
-
-
