@@ -43,7 +43,6 @@ class Jeu:
         self.bindings["l"] = self.droite
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
-        
 
     def affiche(self):
         self.niveaux[self.niveau_en_cours].affiche(self)
@@ -62,7 +61,7 @@ class Jeu:
         """
         Méthode affichant la case sur laquelle était le personnage avant qu'il bouge
         """
-        self.pad.addstr(self.perso[1], self.perso[0], CAR["SOL"])
+        self.pad.addstr(self.perso[1], self.perso[0], self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].CAR)
         self.refresh()
 
     def refresh(self):

@@ -20,14 +20,14 @@ def main():
     generate_dumb(jeu, 20)
     delaunay(jeu) 
     jeu.niveaux[jeu.niveau_en_cours].genere_dico()
+    jeu.niveaux[jeu.niveau_en_cours].place_all_porte()
     #for salle in jeu.niveaux[jeu.niveau_en_cours].salles.values():
     #    salle.affiche(jeu, salle.coin_bdroite[0], salle.coin_bdroite[1], 0)
     jeu.monte()
     jeu.refresh()
     jeu.refresh()
     while not jeu.stop:
-        jeu.step() 
-    
+        jeu.step()
 
 
 if __name__ == "__main__":
