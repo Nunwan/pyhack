@@ -9,6 +9,7 @@ Autant l'affichage que la donnée du personnage chose peut être
 import curses
 import os
 from niveau import Niveau, CAR
+import datetime
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -17,11 +18,13 @@ class Jeu:
     """
     Classe gérant le jeu dans sa généralité
     """
-    def __init__(self):
+    def __init__(self, log=False):
         """
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
+
+        self.log = log
         self.taille = 100
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
@@ -45,6 +48,10 @@ class Jeu:
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
 
+        if log:
+            date = datetime.datetime.now()
+            self.logfile = open("log_" + str(date) + ".txt", 'w')
+            self.logfile.write("######  Logfile generate by pyhack")
     def affiche(self):
         """
         Permet d'afficher le niveau en cours.
@@ -94,6 +101,12 @@ class Jeu:
         curses.nocbreak()
         curses.echo()
         curses.endwin()
+        if self.log:
+            self.logfile.close()
+
+    def log(self, chaine):
+        if self.log:
+            self.logfile.write(chaine)
 
     def step(self):
         """
