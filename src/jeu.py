@@ -52,6 +52,7 @@ class Jeu:
             date = datetime.datetime.now()
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
+
     def affiche(self):
         """
         Permet d'afficher le niveau en cours.
@@ -104,7 +105,7 @@ class Jeu:
         if self.log:
             self.logfile.close()
 
-    def log(self, chaine):
+    def in_log(self, chaine):
         if self.log:
             self.logfile.write(chaine)
 

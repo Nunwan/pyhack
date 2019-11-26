@@ -168,11 +168,11 @@ class Couloir:
 
 
     def genere_ligne_droite(self, dico, horizontal, coordonee_fixe, debut, fin):
-    """
-    Méthode générant une ligne droite dans le sens de horizontal (ou l'autre) entre
-    les points (debut, coordonee_fixe) et (fin-1, coordonee_fixe) (ou inverse si vertical)
-    Est utilisé dans genere_dico (utile seulement pour alleger la fonction
-    """
+        """
+        Méthode générant une ligne droite dans le sens de horizontal (ou l'autre) entre
+        les points (debut, coordonee_fixe) et (fin-1, coordonee_fixe) (ou inverse si vertical)
+        Est utilisé dans genere_dico (utile seulement pour alleger la fonction
+        """
         if horizontal:
             for x in range(debut, fin):
                 if (x, coordonee_fixe) not in dico and (x+1, coordonee_fixe) in dico and isinstance(dico[(x+1, coordonee_fixe)], Salle):
