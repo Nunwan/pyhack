@@ -11,6 +11,7 @@ import os
 from niveau import Niveau, CAR
 from generate import generate_dumb, delaunay
 import datetime
+
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
 
@@ -52,13 +53,13 @@ class Jeu:
             date = datetime.datetime.now()
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
-            
+
     def generate_niveau(self):
         generate_dumb(self, 20)
         delaunay(self)
         self.niveaux[self.niveau_en_cours].genere_dico()
         self.niveaux[self.niveau_en_cours].place_all_porte()
-        
+
 
     def affiche(self):
         """

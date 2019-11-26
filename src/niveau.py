@@ -20,6 +20,8 @@ CAR["PORTE"] = "/"
 MAX_TAILLE = 25
 MIN_TAILLE = 4
 
+CHAMP_DE_VISION = 2
+
 class Salle:
     """
     Classe représentant une salle du jeu
@@ -64,22 +66,22 @@ class Salle:
         avec une champ de vision de 2 cases adjacentes.
         """
         reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
-        if passe < 2:
+        if passe < CHAMP_DE_VISION:
             self.affiche_sol(jeu)
             self.affiche_murh(jeu)
             self.affiche_murv(jeu)
             jeu.refresh()
-            if (x + 1, y) in reminder:
-                reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
-            if (x - 1, y) in reminder:
-                reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
-            if (x, y + 1) in reminder:
-                reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
-            if (x, y - 1) in reminder:
-                reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
-        for porte in self.portes:
-            porte.affiche(jeu, porte.x, porte.y, passe + 1)
-        jeu.refresh()
+            #if (x + 1, y) in reminder:
+            #    reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
+            #if (x - 1, y) in reminder:
+            #    reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
+            #if (x, y + 1) in reminder:
+            #    reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
+            #if (x, y - 1) in reminder:
+            #    reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
+            for porte in self.portes:
+                porte.affiche(jeu, porte.x, porte.y, CHAMP_DE_VISION)
+            jeu.refresh()
 
     def milieu(self):
         """
@@ -155,7 +157,7 @@ class Couloir:
         """
         jeu.pad.addstr(y, x, CAR["COULOIR"])
         reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
-        if passe < 2:
+        if passe < CHAMP_DE_VISION:
             if (x + 1, y) in reminder:
                 reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
             if (x - 1, y) in reminder:
@@ -173,25 +175,29 @@ class Couloir:
         les points (debut, coordonee_fixe) et (fin-1, coordonee_fixe) (ou inverse si vertical)
         Est utilisé dans genere_dico (utile seulement pour alleger la fonction
         """
-        if horizontal:
+        if horizontal:  # Si on fait un chemin horizontal
             for x in range(debut, fin):
-                if (x, coordonee_fixe) not in dico and (x+1, coordonee_fixe) in dico and isinstance(dico[(x+1, coordonee_fixe)], Salle):
+                if (x, coordonee_fixe) not in dico and (x+1, coordonee_fixe) in dico and isinstance(dico[(x+1, coordonee_fixe)], Salle):  # Vérifie s'il faut mettre une porte en entrant dans une salle
                     porte = Porte(x, coordonee_fixe)
                     dico[(x, coordonee_fixe)] = porte
-                    dico[(x+1,coordonee_fixe)].portes.append(porte)
+                    dico[(x+1, coordonee_fixe)].portes.append(porte)
+                if (x, coordonee_fixe) not in dico and ((x, coordonee_fixe - 1) in dico or (x, coordonee_fixe + 1) in dico):
+                    continue  # Fais un cul de sac pour ne pas rentrer dans un mur...
                 if (x, coordonee_fixe) not in dico:
-                    dico[(x, coordonee_fixe)] = self
-                else:
+                    dico[(x, coordonee_fixe)] = self  # Crée le couloir s'il n'est pas créé
+                else:  # Gère la porte à créer si on est dans une salle et qu'on y sort
                     if isinstance(dico[(x, coordonee_fixe)], Salle) and  (x+1, coordonee_fixe) not in dico:
                         porte = Porte(x+1, coordonee_fixe)
                         dico[(x+1, coordonee_fixe)] = porte
                         dico[(x, coordonee_fixe)].portes.append(porte)
-        else:
+        else:  # Si on fait un chemin vertical, pour comprendre les if /else voir ci dessus
             for y in range(debut, fin):
                 if (coordonee_fixe, y) not in dico and (coordonee_fixe, y+1) in dico and isinstance(dico[(coordonee_fixe, y+1)], Salle):
                     porte = Porte(coordonee_fixe, y)
                     dico[(coordonee_fixe, y)] = porte
                     dico[(coordonee_fixe, y+1)].portes.append(porte)
+                if (coordonee_fixe, y) not in dico and ((coordonee_fixe - 1, y) in dico or (coordonee_fixe + 1, y) in dico):
+                    continue
                 if (coordonee_fixe, y) not in dico:
                     dico[(coordonee_fixe, y)] = self
                 else:
@@ -208,18 +214,18 @@ class Couloir:
         if len(dico) == 0:
             self.salle1.genere_dico(dico)
             self.salle2.genere_dico(dico)
-        mid_x, mid_y = milieu_deux(self.salle1.milieu(), self.salle2.milieu())
-        haute, basse = plus_haute_basse(self.salle1, self.salle2)
-        gauche, droite = plus_gauche_droite(self.salle1, self.salle2)
-        if self.salle1.coin_hgauche[0] < mid_x < self.salle1.coin_bdroite[0] and self.salle2.coin_hgauche[0] < mid_x < self.salle2.coin_bdroite[0]:
-            porte1 = Porte(mid_x, haute.coin_bdroite[1] + 1)
+        mid_x, mid_y = milieu_deux(self.salle1.milieu(), self.salle2.milieu())  # Calcul du milieu de deux salles
+        haute, basse = plus_haute_basse(self.salle1, self.salle2)  # Donne la plus haute/basse salle
+        gauche, droite = plus_gauche_droite(self.salle1, self.salle2)  # Donne la plus à gauche, droite salle
+        if self.salle1.coin_hgauche[0] < mid_x < self.salle1.coin_bdroite[0] and self.salle2.coin_hgauche[0] < mid_x < self.salle2.coin_bdroite[0]:  # Si le milieu des deux salles est comprise dans le "x" d'une salle on ne trace qu'un chemin droit
+            porte1 = Porte(mid_x, haute.coin_bdroite[1] + 1)  # On crée les portes
             porte2 = Porte(mid_x, basse.coin_hgauche[1] - 1)
             dico[(mid_x, haute.coin_bdroite[1] + 1)] = porte1
             dico[(mid_x, haute.coin_bdroite[1] + 1)] = porte2
             haute.portes.append(porte1)
             basse.portes.append(porte2)
-            self.genere_ligne_droite(dico, False, mid_x, haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] -1)
-        if self.salle1.coin_hgauche[1] < mid_y < self.salle1.coin_bdroite[1] and self.salle2.coin_hgauche[1] < mid_y < self.salle2.coin_bdroite[1]:
+            self.genere_ligne_droite(dico, False, mid_x, haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] -1)  # On génère le couloir
+        if self.salle1.coin_hgauche[1] < mid_y < self.salle1.coin_bdroite[1] and self.salle2.coin_hgauche[1] < mid_y < self.salle2.coin_bdroite[1]:  # Idem que pour x mais avec y
             porte1 = Porte(gauche.coin_bdroite[0] + 1, mid_y)
             porte2 = Porte(droite.coin_hgauche[0] - 1, mid_y)
             dico[(gauche.coin_bdroite[0] + 1, mid_y)] = porte1
@@ -227,7 +233,7 @@ class Couloir:
             gauche.portes.append(porte1)
             droite.portes.append(porte2)
             self.genere_ligne_droite(dico, True, mid_y, gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
-        else:
+        else:  # Sinon on trace en L
             porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
             if gauche is basse:
                 porte2 = Porte(droite.milieu()[0], droite.coin_bdroite[1] + 1)
@@ -261,6 +267,16 @@ class Porte:
         Méthode affichant la porte
         """
         jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
+        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+        if passe < CHAMP_DE_VISION:
+            if (x + 1, y) in reminder:
+                reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
+            if (x - 1, y) in reminder:
+                reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
+            if (x, y + 1) in reminder:
+                reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
+            if (x, y - 1) in reminder:
+                reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
         jeu.refresh()
 
 
