@@ -7,20 +7,25 @@ Autant l'affichage que la donnée du personnage chose peut être
 """
 
 import curses
-
+import os
 from niveau import Niveau, CAR
+from generate import generate_dumb, delaunay
+import datetime
 
+ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
 
 class Jeu:
     """
     Classe gérant le jeu dans sa généralité
     """
-    def __init__(self):
+    def __init__(self, log=False):
         """
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
+
+        self.log = log
         self.taille = 100
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
@@ -31,6 +36,7 @@ class Jeu:
         self.pad = curses.newpad(self.taille, self.taille)
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
+        curses.curs_set(0)
         #  Initialisation des niveaux du jeu
 
         self.niveaux = [Niveau()]
@@ -43,7 +49,23 @@ class Jeu:
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
 
+        if log:
+            date = datetime.datetime.now()
+            self.logfile = open("log_" + str(date) + ".txt", 'w')
+            self.logfile.write("######  Logfile generate by pyhack")
+
+    def generate_niveau(self):
+        generate_dumb(self, 20)
+        delaunay(self)
+        self.niveaux[self.niveau_en_cours].genere_dico()
+        self.niveaux[self.niveau_en_cours].place_all_porte()
+
+
     def affiche(self):
+        """
+        Permet d'afficher le niveau en cours.
+        Obsolete.
+        """
         self.niveaux[self.niveau_en_cours].affiche(self)
 
     def affiche_perso(self):
@@ -52,7 +74,7 @@ class Jeu:
         Méthode affichant le personnage là où il est
         """
         if (self.perso[0], self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
-            self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self)
+            self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self, self.perso[0], self.perso[1], 0)
         self.pad.addstr(self.perso[1], self.perso[0], CAR["PERSO"])
         self.refresh()
 
@@ -60,7 +82,7 @@ class Jeu:
         """
         Méthode affichant la case sur laquelle était le personnage avant qu'il bouge
         """
-        self.pad.addstr(self.perso[1], self.perso[0], CAR["SOL"])
+        self.pad.addstr(self.perso[1], self.perso[0], self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].CAR)
         self.refresh()
 
     def refresh(self):
@@ -69,9 +91,16 @@ class Jeu:
         Ceci crée un système de caméra puisque cela n'affiche qu'une fenetre de 50*25
         suivant le personnage.
         """
-        cam_haut_x = self.perso[0] - 18
-        cam_haut_y = self.perso[1] - 10
-        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, 25, 50)
+        raw = min(int(ROWS), 25)
+        column = min(int(COLUMNS), 50)
+        cam_haut_y = max(self.perso[1] - 18, 0)
+        cam_haut_x = max(self.perso[0] - 15, 0)
+        if raw < 25:
+            cam_haut_y = max(self.perso[1] - 4, 0)
+        if column < 50:
+            cam_haut_x = max(self.perso[0] - 4, 0)
+        # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
+        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
 
     def fin(self):
         """
@@ -81,8 +110,17 @@ class Jeu:
         curses.nocbreak()
         curses.echo()
         curses.endwin()
+        if self.log:
+            self.logfile.close()
+
+    def in_log(self, chaine):
+        if self.log:
+            self.logfile.write(chaine)
 
     def step(self):
+        """
+        Fonction appelé par la boucle de jeu pour lire le clavier
+        """
         key = self.window.getkey()
         if key in self.bindings:
             self.bindings[key]()

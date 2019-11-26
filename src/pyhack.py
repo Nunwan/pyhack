@@ -9,22 +9,18 @@ Author : BERTIN Robin & GENISSON Maxime
 """
 
 from jeu import Jeu
-from generate import generate_dumb
-
 
 def main():
     """
     Main function of the project Pyhack
     """
-    jeu = Jeu()
-    generate_dumb(jeu, 20)
-    jeu.niveaux[jeu.niveau_en_cours].genere_dico()
-    for salle in jeu.niveaux[jeu.niveau_en_cours].salles:
-        salle.affiche(jeu)
-    jeu.monte()
+    jeu = Jeu()  # Crée le jeu
+    jeu.generate_niveau()
+    jeu.monte()  # Effectue une action mais ne fonction pas jsp pq
     jeu.refresh()
-    while not jeu.stop:
+    while not jeu.stop:  # Tant que le jeu ne doit pas s'arreter attend un appel clavier
         jeu.step()
+
 
 if __name__ == "__main__":
     main()
