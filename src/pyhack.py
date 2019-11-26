@@ -5,16 +5,22 @@ Main module of pyhack project : easy fork of nethack on python.
 
 
 Institution : Grenoble INP - ENSIMAG
-Author : BERTIN Robin & Genisson Maxime
+Author : BERTIN Robin & GENISSON Maxime
 """
 
+from jeu import Jeu
 
 def main():
     """
     Main function of the project Pyhack
     """
-    pass
+    jeu = Jeu()  # Crée le jeu
+    jeu.generate_niveau()
+    jeu.monte()  # Effectue une action mais ne fonction pas jsp pq
+    jeu.refresh()
+    while not jeu.stop:  # Tant que le jeu ne doit pas s'arreter attend un appel clavier
+        jeu.step()
 
 
-if __name = "__main__":
+if __name__ == "__main__":
     main()
