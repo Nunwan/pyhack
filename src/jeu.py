@@ -34,6 +34,7 @@ class Jeu:
         # Création de la fenêtre
         self.window = curses.initscr()
         self.pad = curses.newpad(self.taille, self.taille)
+        #self.pad_texte = curses.newpad(200, 200)
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
         curses.curs_set(0)
@@ -101,6 +102,10 @@ class Jeu:
             cam_haut_x = max(self.perso[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
+
+    #def texte(self, chaine):
+    #    self.pad_texte.addstr(0, 0, chaine)
+    #    self.pad_texte.refresh(0, 0, 0, 52, 20,20)
 
     def fin(self):
         """

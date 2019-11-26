@@ -5,7 +5,7 @@ Module gérant la génération et les opérations sur les
 niveaux du jeu
 """
 
-from random import randint
+from random import randint, random
 
 # Dictionnaire de l'affichage
 CAR = dict()
@@ -254,29 +254,36 @@ class Porte:
     """
     Classe représentant une porte
     """
-    def __init__(self, x, y):
+    def __init__(self, x, y, lock = False):
         """
         Les attributs sont les coordonées de la porte et son caractère d'affichage
         """
         self.x = x
         self.y = y
         self.CAR = "/"
+        self.lock = lock
+        if not lock:
+            if random() <= 0.2:
+                self.lock = True
 
     def affiche(self, jeu, x, y, passe):
         """
         Méthode affichant la porte
         """
-        jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
-        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
-        if passe < CHAMP_DE_VISION:
-            if (x + 1, y) in reminder:
-                reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
-            if (x - 1, y) in reminder:
-                reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
-            if (x, y + 1) in reminder:
-                reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
-            if (x, y - 1) in reminder:
-                reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
+        if not self.lock:
+            jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
+            reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+            if passe < CHAMP_DE_VISION:
+                if (x + 1, y) in reminder:
+                    reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
+                if (x - 1, y) in reminder:
+                    reminder[(x - 1, y)].affiche(jeu, x - 1, y, passe + 1)
+                if (x, y + 1) in reminder:
+                    reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
+                if (x, y - 1) in reminder:
+                    reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
+        else:
+            pass
         jeu.refresh()
 
 
