@@ -3,13 +3,15 @@ Module gérant la génération des niveaux
 """
 
 
-from random import randint, choice
+from random import randint, choice, seed
 from niveau import Salle, Couloir
 from scipy.spatial import Delaunay
 #from jeu import Jeu
 
 MAX_TAILLE = 15
 MIN_TAILLE = 4
+# A décommenter ssi on debug
+seed(1234567890)
 
 def intersection(salle1, salle2):
     """

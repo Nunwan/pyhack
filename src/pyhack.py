@@ -16,6 +16,8 @@ def main():
     """
     jeu = Jeu()  # Crée le jeu
     jeu.generate_niveau()
+    for salle in jeu.niveaux[jeu.niveau_en_cours].salles.values():
+        salle.affiche(jeu, salle.milieu()[0], salle.milieu()[1], 0)
     jeu.monte()  # Effectue une action mais ne fonction pas jsp pq
     jeu.refresh()
     while not jeu.stop:  # Tant que le jeu ne doit pas s'arreter attend un appel clavier
