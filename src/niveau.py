@@ -108,15 +108,6 @@ class Salle:
         for porte in self.portes:
             dico[(porte.x, porte.y)] = porte
 
-def milieu_deux(point1, point2):
-    """
-    Renvoie le point milieu de 2 points
-    """
-    x1, y1 = point1
-    x2, y2 = point2
-    return (x1 + x2) // 2, (y1 + y2)//2
-
-
 def plus_haute_basse(salle1, salle2):
     """
     Renvoie la ssalle la plus haute et la plus basse
@@ -169,7 +160,7 @@ class Couloir:
         jeu.refresh()
 
 
-    def genere_ligne_droite(self, dico, horizontal, coordonee_fixe, debut, fin):
+    def genere_ligne_droite(self, dico, horizontal, coordonee_fixe, debut, fin, direct = False):
         """
         Méthode générant une ligne droite dans le sens de horizontal (ou l'autre) entre
         les points (debut, coordonee_fixe) et (fin-1, coordonee_fixe) (ou inverse si vertical)
@@ -177,12 +168,16 @@ class Couloir:
         """
         if horizontal:  # Si on fait un chemin horizontal
             for x in range(debut, fin):
+
+                est_salle_1 = (x, coordonee_fixe - 1) in dico and isinstance(dico[(x, coordonee_fixe - 1)], Salle)
+                est_salle_2 = (x, coordonee_fixe + 1) in dico and isinstance(dico[(x, coordonee_fixe + 1)], Salle)
                 if (x, coordonee_fixe) not in dico and (x+1, coordonee_fixe) in dico and isinstance(dico[(x+1, coordonee_fixe)], Salle):  # Vérifie s'il faut mettre une porte en entrant dans une salle
                     porte = Porte(x, coordonee_fixe)
                     dico[(x, coordonee_fixe)] = porte
                     dico[(x+1, coordonee_fixe)].portes.append(porte)
-                elif (x, coordonee_fixe) not in dico and ((x, coordonee_fixe - 1) in dico or (x, coordonee_fixe + 1) in dico):
-                    break  # Fais un cul de sac pour ne pas rentrer dans un mur...
+                # A CHANGER !!!
+                elif (x, coordonee_fixe) not in dico and (est_salle_1 or est_salle_2):
+                    break
                 elif (x, coordonee_fixe) not in dico:
                     dico[(x, coordonee_fixe)] = self  # Crée le couloir s'il n'est pas créé
                 else:  # Gère la porte à créer si on est dans une salle et qu'on y sort
@@ -192,11 +187,14 @@ class Couloir:
                         dico[(x, coordonee_fixe)].portes.append(porte)
         else:  # Si on fait un chemin vertical, pour comprendre les if /else voir ci dessus
             for y in range(debut, fin):
+
+                est_salle_1 = (coordonee_fixe - 1, y) in dico and isinstance(dico[(coordonee_fixe - 1, y)], Salle)
+                est_salle_2 = (coordonee_fixe + 1, y) in dico and isinstance(dico[(coordonee_fixe + 1, y)], Salle)
                 if (coordonee_fixe, y) not in dico and (coordonee_fixe, y+1) in dico and isinstance(dico[(coordonee_fixe, y+1)], Salle):
                     porte = Porte(coordonee_fixe, y)
                     dico[(coordonee_fixe, y)] = porte
                     dico[(coordonee_fixe, y+1)].portes.append(porte)
-                elif (coordonee_fixe, y) not in dico and ((coordonee_fixe - 1, y) in dico or (coordonee_fixe + 1, y) in dico):
+                elif (coordonee_fixe, y) not in dico and (est_salle_1 or est_salle_2):
                     break
                 elif (coordonee_fixe, y) not in dico:
                     dico[(coordonee_fixe, y)] = self
@@ -214,24 +212,40 @@ class Couloir:
         if len(dico) == 0:
             self.salle1.genere_dico(dico)
             self.salle2.genere_dico(dico)
-        mid_x, mid_y = milieu_deux(self.salle1.milieu(), self.salle2.milieu())  # Calcul du milieu de deux salles
         haute, basse = plus_haute_basse(self.salle1, self.salle2)  # Donne la plus haute/basse salle
         gauche, droite = plus_gauche_droite(self.salle1, self.salle2)  # Donne la plus à gauche, droite salle
-        porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
-        if gauche is basse:
-            porte2 = Porte(droite.milieu()[0], droite.coin_bdroite[1] + 1)
+        if self.salle1.coin_hgauche[1] < self.salle2.milieu()[1] < self.salle1.coin_bdroite[1]:
+            porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
+            porte2 = Porte(droite.coin_hgauche[0] - 1, gauche.milieu()[1])
+            dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
+            dico[(droite.coin_hgauche[0] - 1, gauche.milieu()[1])] = porte2
+            gauche.portes.append(porte1)
+            droite.portes.append(porte2)
+            self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
+        elif self.salle1.coin_hgauche[0] < self.salle2.milieu()[0] < self.salle1.coin_bdroite[0]:
+            porte1 = Porte(basse.milieu()[0], basse.coin_hgauche[1] - 1)
+            porte2 = Porte(basse.milieu()[0], haute.coin_bdroite[1] + 1)
+            dico[(basse.milieu()[0], basse.coin_hgauche[1] - 1)] = porte1
+            dico[(basse.milieu()[0], haute.coin_bdroite[1] + 1)] = porte2
+            basse.portes.append(porte1)
+            haute.portes.append(porte2)
+            self.genere_ligne_droite(dico, False, basse.milieu()[0], haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] - 1)
         else:
-            porte2 = Porte(droite.milieu()[0], droite.coin_hgauche[1] - 1)
+            porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
+            if gauche is basse:
+                porte2 = Porte(droite.milieu()[0], droite.coin_bdroite[1] + 1)
+            else:
+                porte2 = Porte(droite.milieu()[0], droite.coin_hgauche[1] - 1)
 
-        dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
-        dico[(droite.milieu()[0], droite.coin_bdroite[1] + 1)] = porte2
-        gauche.portes.append(porte1)
-        droite.portes.append(porte2)
-        self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.milieu()[0] + 1)
-        if gauche is basse:
-            self.genere_ligne_droite(dico, False, droite.milieu()[0], droite.coin_bdroite[1] + 2, gauche.milieu()[1] + 1)
-        else:
-            self.genere_ligne_droite(dico, False, droite.milieu()[0], gauche.milieu()[1], droite.coin_bdroite[1] - 1)
+            dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
+            dico[(droite.milieu()[0], droite.coin_bdroite[1] + 1)] = porte2
+            gauche.portes.append(porte1)
+            droite.portes.append(porte2)
+            self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.milieu()[0] + 1)
+            if gauche is basse:
+                self.genere_ligne_droite(dico, False, droite.milieu()[0], droite.coin_bdroite[1] + 2, gauche.milieu()[1] + 1)
+            else:
+                self.genere_ligne_droite(dico, False, droite.milieu()[0], gauche.milieu()[1], droite.coin_hgauche[1] - 1)
 
 class Porte:
     """
