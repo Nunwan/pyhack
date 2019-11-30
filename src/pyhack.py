@@ -20,6 +20,7 @@ def main():
         salle.affiche(jeu, salle.milieu()[0], salle.milieu()[1], 0)
     jeu.monte()  # Effectue une action mais ne fonction pas jsp pq
     jeu.refresh()
+    jeu.info("essai")
     while not jeu.stop:  # Tant que le jeu ne doit pas s'arreter attend un appel clavier
         jeu.step()
 
