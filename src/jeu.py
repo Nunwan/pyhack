@@ -10,6 +10,7 @@ import datetime
 import curses
 import os
 from niveau import Niveau, CAR
+from perso import Personnage
 from generate import generate_dumb, delaunay
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
@@ -27,8 +28,7 @@ class Jeu:
         self.log = log
         self.taille = 100
         # Initialisation des attributs
-        self.perso = [7, 8]  # Coordonnée du personnage
-        self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
+        self.perso = Personnage(self)
         self.stop = 0  # Variable pour finir le jeu
 
         ###
@@ -51,10 +51,10 @@ class Jeu:
         # Bindings
         ####
         self.bindings = dict()
-        self.bindings["j"] = self.descend
-        self.bindings["k"] = self.monte
-        self.bindings["l"] = self.droite
-        self.bindings["h"] = self.gauche
+        self.bindings["j"] = self.perso.descend
+        self.bindings["k"] = self.perso.monte
+        self.bindings["l"] = self.perso.droite
+        self.bindings["h"] = self.perso.gauche
         self.bindings["q"] = self.fin
 
         ####
@@ -72,33 +72,8 @@ class Jeu:
         """
         generate_dumb(self, 20)
         delaunay(self)
-        self.niveaux[self.niveau_en_cours].genere_dico()
-        self.niveaux[self.niveau_en_cours].place_all_porte()
-
-
-    def affiche(self):
-        """
-        Permet d'afficher le niveau en cours.
-        Obsolete.
-        """
-        self.niveaux[self.niveau_en_cours].affiche(self)
-
-    def affiche_perso(self):
-        """
-        Genere dico doit avoir été appelé peut etre ajouté une clause
-        Méthode affichant le personnage là où il est
-        """
-        if (self.perso[0], self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
-            self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].affiche(self, self.perso[0], self.perso[1], 0)
-        self.pad.addstr(self.perso[1], self.perso[0], CAR["PERSO"])
-        self.refresh()
-
-    def reset_perso(self):
-        """
-        Méthode affichant la case sur laquelle était le personnage avant qu'il bouge
-        """
-        self.pad.addstr(self.perso[1], self.perso[0], self.niveaux[self.niveau_en_cours].reminder[(self.perso[0], self.perso[1])].CAR)
-        self.refresh()
+        self.niveaux[self.perso.niveau_en_cours].genere_dico()
+        self.niveaux[self.perso.niveau_en_cours].place_all_porte()
 
     def refresh(self):
         """
@@ -108,12 +83,12 @@ class Jeu:
         """
         raw = min(int(ROWS), 25)
         column = min(int(COLUMNS), 50)
-        cam_haut_y = min(max(self.perso[1] - 18, 0), self.taille - raw)
-        cam_haut_x = min(max(self.perso[0] - 15, 0), self.taille - column)
+        cam_haut_y = min(max(self.perso.position[1] - 18, 0), self.taille - raw)
+        cam_haut_x = min(max(self.perso.position[0] - 15, 0), self.taille - column)
         if raw < 25:
-            cam_haut_y = max(self.perso[1] - 4, 0)
+            cam_haut_y = max(self.perso.position[1] - 4, 0)
         if column < 50:
-            cam_haut_x = max(self.perso[0] - 4, 0)
+            cam_haut_x = max(self.perso.position[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
         self.pad_info.refresh(0, 0, 0, 60, 20, 60 + 40)
@@ -154,40 +129,3 @@ class Jeu:
             self.bindings[key]()
 
 
-    # Fonction de déplacement
-    def monte(self):
-        """
-        Fonction montant le personnage
-        """
-        self.reset_perso()
-        if (self.perso[0], self.perso[1] - 1) in self.niveaux[self.niveau_en_cours].reminder:
-            self.perso[1] -= 1
-        self.affiche_perso()
-
-    def descend(self):
-        """
-        Méthode faisant descendre le perso
-        """
-        self.reset_perso()
-        if (self.perso[0], self.perso[1] + 1) in self.niveaux[self.niveau_en_cours].reminder:
-            self.perso[1] += 1
-        self.affiche_perso()
-
-    def gauche(self):
-        """
-        Methode déplacant le perso à gauche
-        """
-        self.reset_perso()
-        if (self.perso[0] - 1, self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
-            self.perso[0] -= 1
-        self.affiche_perso()
-
-
-    def droite(self):
-        """
-        Méthode déplacant le perso à droite
-        """
-        self.reset_perso()
-        if (self.perso[0] + 1, self.perso[1]) in self.niveaux[self.niveau_en_cours].reminder:
-            self.perso[0] += 1
-        self.affiche_perso()
