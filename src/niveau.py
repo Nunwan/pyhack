@@ -168,14 +168,14 @@ class Couloir:
         """
         if horizontal:  # Si on fait un chemin horizontal
             for x in range(debut, fin):
-
+                # Booléen donnant si les cases dessu, dessous sont des salles.
                 est_salle_1 = (x, coordonee_fixe - 1) in dico and isinstance(dico[(x, coordonee_fixe - 1)], Salle)
                 est_salle_2 = (x, coordonee_fixe + 1) in dico and isinstance(dico[(x, coordonee_fixe + 1)], Salle)
+                ### Création couloir + porte traversante
                 if (x, coordonee_fixe) not in dico and (x+1, coordonee_fixe) in dico and isinstance(dico[(x+1, coordonee_fixe)], Salle):  # Vérifie s'il faut mettre une porte en entrant dans une salle
                     porte = Porte(x, coordonee_fixe)
                     dico[(x, coordonee_fixe)] = porte
                     dico[(x+1, coordonee_fixe)].portes.append(porte)
-                # A CHANGER !!!
                 elif (x, coordonee_fixe) not in dico and (est_salle_1 or est_salle_2):
                     break
                 elif (x, coordonee_fixe) not in dico:
@@ -187,9 +187,9 @@ class Couloir:
                         dico[(x, coordonee_fixe)].portes.append(porte)
         else:  # Si on fait un chemin vertical, pour comprendre les if /else voir ci dessus
             for y in range(debut, fin):
-
                 est_salle_1 = (coordonee_fixe - 1, y) in dico and isinstance(dico[(coordonee_fixe - 1, y)], Salle)
                 est_salle_2 = (coordonee_fixe + 1, y) in dico and isinstance(dico[(coordonee_fixe + 1, y)], Salle)
+                ###
                 if (coordonee_fixe, y) not in dico and (coordonee_fixe, y+1) in dico and isinstance(dico[(coordonee_fixe, y+1)], Salle):
                     porte = Porte(coordonee_fixe, y)
                     dico[(coordonee_fixe, y)] = porte
@@ -247,11 +247,12 @@ class Couloir:
             else:
                 self.genere_ligne_droite(dico, False, droite.milieu()[0], gauche.milieu()[1], droite.coin_hgauche[1] - 1)
 
+
 class Porte:
     """
     Classe représentant une porte
     """
-    def __init__(self, x, y, lock = False):
+    def __init__(self, x, y, lock=False):
         """
         Les attributs sont les coordonées de la porte et son caractère d'affichage
         """
@@ -290,7 +291,6 @@ class Niveau:
     """
     Classe représentant un niveau du jeu
     """
-    #import generate
     def __init__(self):
         """
         Le constructeur construit un niveau vide de salles et de couloir
@@ -306,12 +306,8 @@ class Niveau:
         self.reminder = dict()
         for salle in self.salles.values():
             salle.genere_dico(self.reminder)
-        file = open("log.txt", 'w')
-        for c in self.couloirs.values():
-            c.genere_dico(self.reminder)
-            file.write("{}, {} -> {}, {} \n".format(*c.salle1.milieu(), *c.salle2.milieu()))
-        file.write(str(self.reminder))
-        file.close()
+        for couloir in self.couloirs.values():
+            couloir.genere_dico(self.reminder)
 
     def place_all_porte(self):
         """

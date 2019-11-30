@@ -94,8 +94,8 @@ class Jeu:
         """
         raw = min(int(ROWS), 25)
         column = min(int(COLUMNS), 50)
-        cam_haut_y = max(self.perso[1] - 18, 0)
-        cam_haut_x = max(self.perso[0] - 15, 0)
+        cam_haut_y = min(max(self.perso[1] - 18, 0), self.taille - raw)
+        cam_haut_x = min(max(self.perso[0] - 15, 0), self.taille - column)
         if raw < 25:
             cam_haut_y = max(self.perso[1] - 4, 0)
         if column < 50:
