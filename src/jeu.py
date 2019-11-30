@@ -6,11 +6,11 @@ Autant l'affichage que la donnée du personnage chose peut être
 à séparer
 """
 
+import datetime
 import curses
 import os
 from niveau import Niveau, CAR
 from generate import generate_dumb, delaunay
-import datetime
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -24,24 +24,32 @@ class Jeu:
         Initialise le plateau de jeu en générant des salles/couloirs aléatoirement
         et un personnage en (0,0)
         """
-
         self.log = log
         self.taille = 100
         # Initialisation des attributs
         self.perso = [7, 8]  # Coordonnée du personnage
         self.niveau_en_cours = 0  # Le niveau dans lequel on se trouve
         self.stop = 0  # Variable pour finir le jeu
+
+        ###
+        # Fenetre
+        ###
         # Création de la fenêtre
         self.window = curses.initscr()
+        # Création du pad affichant le jeu
         self.pad = curses.newpad(self.taille, self.taille)
+        # Création du pad affichant les infos
+        self.pad_info = curses.newpad(200, 200)
+        # Configuration de la fenetre
         curses.noecho()  # N'affiche pas les choses tapées
         curses.cbreak()  # laisse le buffer vide
-        curses.curs_set(0)
+        curses.curs_set(0)  # N'affiche pas le curseur
         #  Initialisation des niveaux du jeu
-
         self.niveaux = [Niveau()]
-        # Bindings
 
+        ####
+        # Bindings
+        ####
         self.bindings = dict()
         self.bindings["j"] = self.descend
         self.bindings["k"] = self.monte
@@ -49,12 +57,19 @@ class Jeu:
         self.bindings["h"] = self.gauche
         self.bindings["q"] = self.fin
 
+        ####
+        # possibilité de log
+        ####
         if log:
             date = datetime.datetime.now()
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
 
     def generate_niveau(self):
+        """
+        Méthode générant un niveau entier pour le niveau en cours :
+        Salles, couloirs, portes
+        """
         generate_dumb(self, 20)
         delaunay(self)
         self.niveaux[self.niveau_en_cours].genere_dico()
@@ -93,14 +108,22 @@ class Jeu:
         """
         raw = min(int(ROWS), 25)
         column = min(int(COLUMNS), 50)
-        cam_haut_y = max(self.perso[1] - 18, 0)
-        cam_haut_x = max(self.perso[0] - 15, 0)
+        cam_haut_y = min(max(self.perso[1] - 18, 0), self.taille - raw)
+        cam_haut_x = min(max(self.perso[0] - 15, 0), self.taille - column)
         if raw < 25:
             cam_haut_y = max(self.perso[1] - 4, 0)
         if column < 50:
             cam_haut_x = max(self.perso[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
+        self.pad_info.refresh(0, 0, 0, 60, 20, 60 + 40)
+
+    def info(self, chaine):
+        """
+        Méthode basique affichant une chaine de caractère
+        sur le pad d'info : à droite du jeu
+        """
+        self.pad_info.addstr(0, 0, chaine)
 
     def fin(self):
         """
@@ -114,6 +137,11 @@ class Jeu:
             self.logfile.close()
 
     def in_log(self, chaine):
+        """
+        Methode écrivant la chaine
+        dans le fichier de log si les logs
+        sont activés.
+        """
         if self.log:
             self.logfile.write(chaine)
 

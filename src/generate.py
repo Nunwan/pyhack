@@ -3,13 +3,15 @@ Module gérant la génération des niveaux
 """
 
 
-from random import randint, choice
+from random import randint, choice, seed
 from niveau import Salle, Couloir
 from scipy.spatial import Delaunay
 #from jeu import Jeu
 
 MAX_TAILLE = 15
 MIN_TAILLE = 4
+# A décommenter ssi on debug
+seed(1234567890)
 
 def intersection(salle1, salle2):
     """
@@ -42,7 +44,7 @@ def generate_dumb(jeu, number):
         x_mid, y_mid = r.milieu()
         jeu.niveaux[jeu.niveau_en_cours].salles[(x_mid, y_mid)] = r
         if j > pas:
-            return 0
+            continue
     # Placement du joueur initialement
     salle = choice(list(jeu.niveaux[jeu.niveau_en_cours].salles.values()))
     x_init, y_init = salle.milieu()
