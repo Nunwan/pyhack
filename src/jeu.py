@@ -73,7 +73,7 @@ class Jeu:
         generate_dumb(self, 20)
         delaunay(self)
         self.niveaux[self.perso.niveau_en_cours].genere_dico()
-        self.niveaux[self.perso.niveau_en_cours].place_all_porte()
+        #self.niveaux[self.perso.niveau_en_cours].place_all_porte()
 
     def refresh(self):
         """
@@ -91,7 +91,11 @@ class Jeu:
             cam_haut_x = max(self.perso.position[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
-        self.pad_info.refresh(0, 0, 0, 60, 20, 60 + 40)
+        self.pad_info.refresh(0, 0, 2, 60, 20, 60 + 40)
+
+    def msg(self, chaine):
+        self.window.addstr(0, 0, chaine)
+        self.refresh()
 
     def info(self, chaine):
         """
@@ -99,6 +103,8 @@ class Jeu:
         sur le pad d'info : à droite du jeu
         """
         self.pad_info.addstr(0, 0, chaine)
+        self.pad.clear()
+        self.refresh()
 
     def fin(self):
         """
