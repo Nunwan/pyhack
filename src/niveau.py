@@ -266,7 +266,7 @@ class Porte:
         self.lock = lock
         # 1 porte sur dix est bloqué
         if not lock:
-            if random() <= 0.1:
+            if random() <= 0.05:
                 self.lock = True
 
     def affiche(self, jeu, x, y, passe):

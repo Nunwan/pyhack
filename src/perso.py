@@ -47,6 +47,7 @@ class Personnage:
             if isinstance(prochain, Porte) and prochain.lock:
                 self.jeu.msg("La porte est bloqué")
             else:  # sinon fais le mouvement
+                self.jeu.msg(" ")
                 self.position[1] -= 1
         self.affiche_perso()
 

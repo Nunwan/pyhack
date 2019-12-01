@@ -65,6 +65,20 @@ class Jeu:
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
 
+
+    def accueil(self):
+        """
+        Méthode gérant l'accueil du jeu.
+        """
+        confirmation = self.oui_non("Bienvenue sur le pyhack de BERTIN Robin \n \
+Voulez vous commencer une partie ? (o/n)")
+        if confirmation:
+            self.window.clear()
+            self.window.refresh()
+            self.perso.monte()
+        else:
+            self.fin(True)
+
     def generate_niveau(self):
         """
         Méthode générant un niveau entier pour le niveau en cours :
@@ -90,12 +104,13 @@ class Jeu:
         if column < 50:
             cam_haut_x = max(self.perso.position[0] - 4, 0)
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
-        self.pad.refresh(cam_haut_y, cam_haut_x, 0, 0, raw - 1, column - 1)
+        self.pad.refresh(cam_haut_y, cam_haut_x, 1, 0, raw - 1, column - 1)
         self.pad_info.refresh(0, 0, 2, 60, 20, 60 + 40)
 
-    def msg(self, chaine):
-        self.window.addstr(0, 0, chaine)
-        self.refresh()
+    def msg(self, chaine, override_limit=False):
+        if len(chaine) <=  50 or override_limit:
+            self.window.addstr(0, 0, chaine)
+            self.refresh()
 
     def info(self, chaine):
         """
@@ -106,16 +121,28 @@ class Jeu:
         self.pad.clear()
         self.refresh()
 
-    def fin(self):
+    def oui_non(self, msg):
+        self.msg(msg, True)
+        key = self.window.getkey()
+        while key != "o" and key != "n":
+            key = self.window.getkey()
+        if key == "o":
+            return True
+        else:
+            return False
+
+    def fin(self, override=False):
         """
         'Destructeur' fermant la fenêtre curses
         """
-        self.stop = 1
-        curses.nocbreak()
-        curses.echo()
-        curses.endwin()
-        if self.log:
-            self.logfile.close()
+        confirmation = self.oui_non("Voulez-vous vraiment quitter ? (o/n)")
+        if confirmation or override:
+            self.stop = 1
+            curses.nocbreak()
+            curses.echo()
+            curses.endwin()
+            if self.log:
+                self.logfile.close()
 
     def in_log(self, chaine):
         """
@@ -132,6 +159,8 @@ class Jeu:
         """
         key = self.window.getkey()
         if key in self.bindings:
+            if self.window.inch(0,0) != " ":
+                self.window.addstr(0, 0, " " * 49)
+            self.refresh()
             self.bindings[key]()
-
 
