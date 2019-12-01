@@ -33,6 +33,8 @@ class Personnage:
         self.jeu.pad.addstr(self.position[1], self.position[0], self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].CAR)
         self.jeu.refresh()
 
+    def __str__(self):
+        return("Personnage :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))
 
     # Fonction de déplacement
     def monte(self):

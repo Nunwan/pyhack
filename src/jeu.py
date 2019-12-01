@@ -158,6 +158,7 @@ Voulez vous commencer une partie ? (o/n)")
         Fonction appelé par la boucle de jeu pour lire le clavier
         """
         key = self.window.getkey()
+        self.window.addstr(26, 0, str(self.perso))
         if key in self.bindings:
             if self.window.inch(0,0) != " ":
                 self.window.addstr(0, 0, " " * 49)
