@@ -65,12 +65,11 @@ class Salle:
         Méthode regroupant les méthodes précédentes et affichant toute la salle
         avec une champ de vision de 2 cases adjacentes.
         """
-        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+        reminder = jeu.niveaux[jeu.perso.niveau_en_cours].reminder
         if passe < CHAMP_DE_VISION:
             self.affiche_sol(jeu)
             self.affiche_murh(jeu)
             self.affiche_murv(jeu)
-            jeu.refresh()
             #if (x + 1, y) in reminder:
             #    reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
             #if (x - 1, y) in reminder:
@@ -147,7 +146,7 @@ class Couloir:
         2
         """
         jeu.pad.addstr(y, x, CAR["COULOIR"])
-        reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+        reminder = jeu.niveaux[jeu.perso.niveau_en_cours].reminder
         if passe < CHAMP_DE_VISION:
             if (x + 1, y) in reminder:
                 reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
@@ -214,7 +213,11 @@ class Couloir:
             self.salle2.genere_dico(dico)
         haute, basse = plus_haute_basse(self.salle1, self.salle2)  # Donne la plus haute/basse salle
         gauche, droite = plus_gauche_droite(self.salle1, self.salle2)  # Donne la plus à gauche, droite salle
-        if self.salle1.coin_hgauche[1] < self.salle2.milieu()[1] < self.salle1.coin_bdroite[1]:
+        y_1_dans_2 = self.salle2.coin_hgauche[1] < self.salle1.milieu()[1] < self.salle2.coin_bdroite[1]
+        y_2_dans_1 = self.salle1.coin_hgauche[1] < self.salle2.milieu()[1] < self.salle1.coin_bdroite[1]
+        x_1_dans_2 = self.salle2.coin_hgauche[0] < self.salle1.milieu()[0] < self.salle2.coin_bdroite[0]
+        x_2_dans_1 = self.salle1.coin_hgauche[0] < self.salle2.milieu()[0] < self.salle1.coin_bdroite[0]
+        if y_1_dans_2 and y_2_dans_1:
             porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
             porte2 = Porte(droite.coin_hgauche[0] - 1, gauche.milieu()[1])
             dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
@@ -222,7 +225,7 @@ class Couloir:
             gauche.portes.append(porte1)
             droite.portes.append(porte2)
             self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
-        elif self.salle1.coin_hgauche[0] < self.salle2.milieu()[0] < self.salle1.coin_bdroite[0]:
+        elif x_1_dans_2 and x_2_dans_1:
             porte1 = Porte(basse.milieu()[0], basse.coin_hgauche[1] - 1)
             porte2 = Porte(basse.milieu()[0], haute.coin_bdroite[1] + 1)
             dico[(basse.milieu()[0], basse.coin_hgauche[1] - 1)] = porte1
@@ -234,11 +237,12 @@ class Couloir:
             porte1 = Porte(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
             if gauche is basse:
                 porte2 = Porte(droite.milieu()[0], droite.coin_bdroite[1] + 1)
+                dico[(droite.milieu()[0], droite.coin_bdroite[1] + 1)] = porte2
             else:
                 porte2 = Porte(droite.milieu()[0], droite.coin_hgauche[1] - 1)
+                dico[(droite.milieu()[0], droite.coin_hgauche[1] - 1)] = porte2
 
             dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
-            dico[(droite.milieu()[0], droite.coin_bdroite[1] + 1)] = porte2
             gauche.portes.append(porte1)
             droite.portes.append(porte2)
             self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.milieu()[0] + 1)
@@ -260,17 +264,18 @@ class Porte:
         self.y = y
         self.CAR = "/"
         self.lock = lock
+        # 1 porte sur dix est bloqué
         if not lock:
-            if random() <= 0.2:
+            if random() <= 0.05:
                 self.lock = True
 
     def affiche(self, jeu, x, y, passe):
         """
         Méthode affichant la porte
         """
-        jeu.pad.addstr(self.y, self.x, CAR["PORTE"])
+        jeu.pad.addstr(y, x, CAR["PORTE"])
         if not self.lock:
-            reminder = jeu.niveaux[jeu.niveau_en_cours].reminder
+            reminder = jeu.niveaux[jeu.perso.niveau_en_cours].reminder
             if passe < CHAMP_DE_VISION:
                 if (x + 1, y) in reminder:
                     reminder[(x + 1, y)].affiche(jeu, x + 1, y, passe + 1)
@@ -280,8 +285,6 @@ class Porte:
                     reminder[(x, y + 1)].affiche(jeu, x, y + 1, passe + 1)
                 if (x, y - 1) in reminder:
                     reminder[(x, y - 1)].affiche(jeu, x, y - 1, passe + 1)
-        else:
-            pass
         jeu.refresh()
 
 

@@ -33,7 +33,7 @@ def generate_dumb(jeu, number):
     for i in range(number):
         r = None
         j = 0
-        while j <= pas and (r is None or a_une_intersection(r, jeu.niveaux[jeu.niveau_en_cours])):
+        while j <= pas and (r is None or a_une_intersection(r, jeu.niveaux[jeu.perso.niveau_en_cours])):
             height = randint(MIN_TAILLE, MAX_TAILLE)
             width = randint(MIN_TAILLE, MAX_TAILLE)
             coin_hgauche = [randint(1, jeu.taille - width-2), randint(1, jeu.taille - height-2)]
@@ -42,13 +42,13 @@ def generate_dumb(jeu, number):
                 r = None
             r = Salle(coin_hgauche, coin_bdroite)
         x_mid, y_mid = r.milieu()
-        jeu.niveaux[jeu.niveau_en_cours].salles[(x_mid, y_mid)] = r
+        jeu.niveaux[jeu.perso.niveau_en_cours].salles[(x_mid, y_mid)] = r
         if j > pas:
             continue
     # Placement du joueur initialement
-    salle = choice(list(jeu.niveaux[jeu.niveau_en_cours].salles.values()))
+    salle = choice(list(jeu.niveaux[jeu.perso.niveau_en_cours].salles.values()))
     x_init, y_init = salle.milieu()
-    jeu.perso = [x_init + 2, y_init + 2]
+    jeu.perso.position = [x_init + 2, y_init + 2]
     return 1
 
 
@@ -67,7 +67,7 @@ def liste_milieu(jeu):
     """
     Renvoie la liste des milieux de toutes les salles.
     """
-    return  [milieu for milieu in jeu.niveaux[jeu.niveau_en_cours].salles.keys()]
+    return  [milieu for milieu in jeu.niveaux[jeu.perso.niveau_en_cours].salles.keys()]
 
 def delaunay(jeu):
     """
@@ -77,8 +77,8 @@ def delaunay(jeu):
     """
     milieux = liste_milieu(jeu)
     triangles = Delaunay(milieux).simplices
-    couloirs = jeu.niveaux[jeu.niveau_en_cours].couloirs
-    salles = jeu.niveaux[jeu.niveau_en_cours].salles
+    couloirs = jeu.niveaux[jeu.perso.niveau_en_cours].couloirs
+    salles = jeu.niveaux[jeu.perso.niveau_en_cours].salles
     for p1, p2, p3 in triangles:
         if (p1, p2) not in couloirs and (p2, p1) not in couloirs:
             couloirs[(p1, p2)] = Couloir(salles[milieux[p1]], salles[milieux[p2]])
