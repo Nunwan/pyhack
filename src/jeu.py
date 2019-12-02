@@ -45,7 +45,7 @@ class Jeu:
         curses.cbreak()  # laisse le buffer vide
         curses.curs_set(0)  # N'affiche pas le curseur
         #  Initialisation des niveaux du jeu
-        self.niveaux = [Niveau()]
+        self.niveaux = [Niveau(self)]
 
         ####
         # Bindings
@@ -160,7 +160,7 @@ Voulez vous commencer une partie ? (o/n)")
         key = self.window.getkey()
         self.window.addstr(26, 0, str(self.perso))
         if key in self.bindings:
-            if self.window.inch(0,0) != " ":
+            if self.window.inch(0, 0) != " ":
                 self.window.addstr(0, 0, " " * 49)
             self.refresh()
             self.bindings[key]()

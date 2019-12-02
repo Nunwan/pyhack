@@ -21,7 +21,7 @@ class Personnage:
         Méthode affichant le personnage là où il est
         """
         if (self.position[0], self.position[1]) in self.jeu.niveaux[self.niveau_en_cours].reminder:
-            self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].affiche(self.jeu, self.position[0], self.position[1], 0)
+            self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].affiche(self.position[0], self.position[1], 0)
             #self.jeu.msg(str(self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])]))
         self.jeu.pad.addstr(self.position[1], self.position[0], CAR["PERSO"])
         self.jeu.refresh()

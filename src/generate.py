@@ -40,7 +40,7 @@ def generate_dumb(jeu, number):
             coin_bdroite = [coin_hgauche[0] + width, coin_hgauche[1] + height]
             if coin_bdroite[0] == jeu.taille or coin_bdroite[1] == jeu.taille:
                 r = None
-            r = Salle(coin_hgauche, coin_bdroite)
+            r = Salle(jeu, coin_hgauche, coin_bdroite)
         x_mid, y_mid = r.milieu()
         jeu.niveaux[jeu.perso.niveau_en_cours].salles[(x_mid, y_mid)] = r
         if j > pas:
@@ -81,8 +81,8 @@ def delaunay(jeu):
     salles = jeu.niveaux[jeu.perso.niveau_en_cours].salles
     for p1, p2, p3 in triangles:
         if (p1, p2) not in couloirs and (p2, p1) not in couloirs:
-            couloirs[(p1, p2)] = Couloir(salles[milieux[p1]], salles[milieux[p2]])
+            couloirs[(p1, p2)] = Couloir(jeu, salles[milieux[p1]], salles[milieux[p2]])
         if (p3, p2) not in couloirs and (p2, p3) not in couloirs:
-            couloirs[(p2, p3)] = Couloir(salles[milieux[p2]], salles[milieux[p3]])
+            couloirs[(p2, p3)] = Couloir(jeu, salles[milieux[p2]], salles[milieux[p3]])
         if (p1, p3) not in couloirs and (p3, p1) not in couloirs:
-            couloirs[(p1, p3)] = Couloir(salles[milieux[p1]], salles[milieux[p3]])
+            couloirs[(p1, p3)] = Couloir(jeu, salles[milieux[p1]], salles[milieux[p3]])
