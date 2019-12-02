@@ -3,6 +3,7 @@ Module gérant tout ce qui compose un personnage
 """
 
 from niveau import CAR, Porte
+from objet import Objet
 
 class Personnage:
     """
@@ -37,64 +38,44 @@ class Personnage:
         return("Personnage :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))
 
     # Fonction de déplacement
-    def monte(self):
+    def mouvement(self, vers_x, vers_y):
         """
-        Fonction montant le personnage
+        Fonction gérant le déplacement général
         """
         self.reset_perso()
-        if (self.position[0], self.position[1] - 1) in self.jeu.niveaux[self.niveau_en_cours].reminder:
+        if (vers_x, vers_y) in self.jeu.niveaux[self.niveau_en_cours].reminder:
             # Gère la porte bloqué
             reminder = self.jeu.niveaux[self.niveau_en_cours].reminder
-            prochain = reminder[(self.position[0], self.position[1] - 1)]
+            prochain = reminder[(vers_x, vers_y)]
             if isinstance(prochain, Porte) and prochain.lock:
                 self.jeu.msg("La porte est bloqué")
             else:  # sinon fais le mouvement
                 self.jeu.msg(" ")
-                self.position[1] -= 1
+                self.position = [vers_x, vers_y]
+                if isinstance(prochain, Objet):
+                    prochain.action()
         self.affiche_perso()
+
+    def monte(self):
+        """
+        Fonction montant le personnage
+        """
+        self.mouvement(self.position[0], self.position[1] - 1)
 
     def descend(self):
         """
         Méthode faisant descendre le perso
         """
-        self.reset_perso()
-        if (self.position[0], self.position[1] + 1) in self.jeu.niveaux[self.niveau_en_cours].reminder:
-            # Gère la porte bloqué
-            reminder = self.jeu.niveaux[self.niveau_en_cours].reminder
-            prochain = reminder[(self.position[0], self.position[1] + 1)]
-            if isinstance(prochain, Porte) and prochain.lock:
-                self.jeu.msg("La porte est bloqué")
-            else:  # sinon fais le mouvement
-                self.position[1] += 1
-        self.affiche_perso()
+        self.mouvement(self.position[0], self.position[1] + 1)
 
     def gauche(self):
         """
         Methode déplacant le perso à gauche
         """
-        self.reset_perso()
-        if (self.position[0] - 1, self.position[1]) in self.jeu.niveaux[self.niveau_en_cours].reminder:
-            # Gère la porte bloqué
-            reminder = self.jeu.niveaux[self.niveau_en_cours].reminder
-            prochain = reminder[(self.position[0] - 1, self.position[1])]
-            if isinstance(prochain, Porte) and prochain.lock:
-                self.jeu.msg("La porte est bloqué")
-            else:   # sinon fais le mouvement
-                self.position[0] -= 1
-        self.affiche_perso()
-
+        self.mouvement(self.position[0] - 1, self.position[1])
 
     def droite(self):
         """
         Méthode déplacant le perso à droite
         """
-        self.reset_perso()
-        if (self.position[0] + 1, self.position[1]) in self.jeu.niveaux[self.niveau_en_cours].reminder:
-            # Gère la porte bloqué
-            reminder = self.jeu.niveaux[self.niveau_en_cours].reminder
-            prochain = reminder[(self.position[0] + 1, self.position[1])]
-            if isinstance(prochain, Porte) and prochain.lock:
-                self.jeu.msg("La porte est bloqué")
-            else:  # sinon fais le mouvement
-                self.position[0] += 1
-        self.affiche_perso()
+        self.mouvement(self.position[0] + 1, self.position[1])

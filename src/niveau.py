@@ -6,6 +6,7 @@ niveaux du jeu
 """
 
 from random import randint, random
+from objet import Objet
 
 # Dictionnaire de l'affichage
 CAR = dict()
@@ -35,6 +36,15 @@ class Salle:
         self.coin_hgauche = coin_hgauche
         self.portes = []  # Les portes sont de bases vides.
         self.CAR = "."  # caractère du sol d'une salle
+        self.objets = dict()
+
+    def affiche_objet(self, jeu):
+        """
+        Méthode affichant les objets de la salle
+        """
+        for objet in self.objets.values():
+            jeu.pad.addstr(objet.y, objet.x, objet.car)
+        jeu.refresh()
 
     def affiche_sol(self, jeu):
         """
