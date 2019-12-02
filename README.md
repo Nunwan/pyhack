@@ -8,11 +8,22 @@ Repository : [https://gitlab.ensimag.fr/bertinr/pyhack](https://gitlab.ensimag.f
 
 ## Features
 
-For now (01-12-2019), the project has the following features : 
+For now (01-12-2019), the project has the following features :
 
 - A dungeon with a single level which has multiple rooms linked with corridors and doors (which can be locked).
 - A principal character (@) who can move in this dungeon and has PV and mana but still useless.
 - A camera which follow the character and enable the character to discover the dungeon progressively.
+
+## Installation
+
+**Required packages:**
+
+- python (version >= 3.7)
+
+**Required packages modules :**
+- scipy
+- random
+- curses
 
 ## TODO
 
