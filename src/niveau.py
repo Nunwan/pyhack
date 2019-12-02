@@ -40,6 +40,10 @@ class Salle:
         self.objets = dict()
         self.objets[self.milieu()] = Potion(jeu, *self.milieu(), self)
 
+    def affiche_objet(self):
+        for objet in self.objets.values():
+            self.jeu.pad.addstr(objet.y, objet.x, objet.car)
+
     def affiche_sol(self):
         """
         Méthode affichant le sol de la salle
@@ -74,6 +78,7 @@ class Salle:
             self.affiche_sol()
             self.affiche_murh()
             self.affiche_murv()
+            self.affiche_objet()
             #if (x + 1, y) in reminder:
             #    reminder[(x + 1, y)].affiche(self.jeu, x + 1, y, passe + 1)
             #if (x - 1, y) in reminder:
@@ -102,6 +107,8 @@ class Salle:
         for x in range(self.coin_hgauche[0], self.coin_bdroite[0] + 1):
             for y in range(self.coin_hgauche[1], self.coin_bdroite[1] + 1):
                 dico[(x, y)] = self
+        for objet in self.objets.values():
+            dico[(objet.x, objet.y)] = objet
 
     def place_porte(self, dico):
         """

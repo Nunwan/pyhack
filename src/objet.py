@@ -8,7 +8,7 @@ class Objet:
     Classe gérant les objets
     """
 
-    def __init__(self, x, y, jeu, salle):
+    def __init__(self, jeu, x, y, salle):
         self.salle = salle
         self.x = x
         self.y = y
@@ -16,10 +16,8 @@ class Objet:
         self.jeu = jeu
 
     def affiche(self, x, y, jeu):
-        self.salle.affiche(jeu, self.salle.milieu()[0], self.salle.milieu()[1], 0)
+        self.salle.affiche(self.salle.milieu()[0], self.salle.milieu()[1], 0)
     
-    def action(self):
-        pass
 
 class Potion(Objet):
     """
@@ -33,3 +31,7 @@ class Potion(Objet):
     def action(self, perso):
         perso.pv += 10
         self.jeu.msg("Vous gagnez 10 PV")
+        niveau = self.jeu.niveaux[self.jeu.perso.niveau_en_cours]
+        reminder = niveau.reminder
+        niveau.reminder[(self.x, self.y)] = self.salle
+        del self.salle.objets[(self.x, self.y)] 

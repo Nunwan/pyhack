@@ -51,9 +51,9 @@ class Personnage:
                 self.jeu.msg("La porte est bloqué")
             else:  # sinon fais le mouvement
                 self.jeu.msg(" ")
-                self.position = [vers_x, vers_y]
                 if isinstance(prochain, Objet):
-                    prochain.action()
+                    prochain.action(self)
+                self.position = [vers_x, vers_y]
         self.affiche_perso()
 
     def monte(self):
