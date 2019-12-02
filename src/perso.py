@@ -31,7 +31,7 @@ class Personnage:
         """
         Méthode affichant la case sur laquelle était le personnage avant qu'il bouge
         """
-        self.jeu.pad.addstr(self.position[1], self.position[0], self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].CAR)
+        self.jeu.pad.addstr(self.position[1], self.position[0], self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].car)
         self.jeu.refresh()
 
     def __str__(self):

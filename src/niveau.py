@@ -5,8 +5,8 @@ Module gérant la génération et les opérations sur les
 niveaux du jeu
 """
 
-from random import randint, random
-from objet import Potion
+from random import randint, random, choice
+from objet import liste_objet
 
 # Dictionnaire de l'affichage
 CAR = dict()
@@ -35,10 +35,23 @@ class Salle:
         self.coin_bdroite = coin_bdroite
         self.coin_hgauche = coin_hgauche
         self.portes = []  # Les portes sont de bases vides.
-        self.CAR = "."  # caractère du sol d'une salle
+        self.car = "."  # caractère du sol d'une salle
         self.jeu = jeu
         self.objets = dict()
-        self.objets[self.milieu()] = Potion(jeu, *self.milieu(), self)
+        self.genere_objet()
+
+    def genere_objet(self):
+        liste = liste_objet()
+        nombre = randint(0, 2)
+        if random() > 0.9:
+            nombre = randint(1, 5)
+        for ind in range(nombre):
+            objet = choice(liste)
+            x = randint(self.coin_hgauche[0], self.coin_bdroite[0])
+            y = randint(self.coin_hgauche[1], self.coin_bdroite[1])
+            new_obj = objet(self.jeu, x, y, self)
+            if (x, y) not in self.objets:
+                self.objets[(x, y)] = new_obj
 
     def affiche_objet(self):
         for objet in self.objets.values():
@@ -148,7 +161,7 @@ class Couloir:
         """
         self.salle1 = salle1
         self.salle2 = salle2
-        self.CAR = "#"
+        self.car = "#"
         self.jeu = jeu
 
     def affiche(self, x, y, passe):
@@ -275,7 +288,7 @@ class Porte:
         self.jeu = jeu
         self.x = x
         self.y = y
-        self.CAR = "/"
+        self.car = "/"
         self.lock = lock
         # 1 porte sur dix est bloqué
         if not lock:
