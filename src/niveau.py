@@ -40,14 +40,6 @@ class Salle:
         self.objets = dict()
         self.objets[self.milieu()] = Potion(jeu, *self.milieu(), self)
 
-    def affiche_objet(self, jeu):
-        """
-        Méthode affichant les objets de la salle
-        """
-        for objet in self.objets.values():
-            jeu.pad.addstr(objet.y, objet.x, objet.car)
-        jeu.refresh()
-
     def affiche_sol(self):
         """
         Méthode affichant le sol de la salle
