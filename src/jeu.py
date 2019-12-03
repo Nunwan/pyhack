@@ -12,6 +12,7 @@ import os
 from niveau import Niveau, CAR
 from perso import Personnage
 from generate import generate_dumb, delaunay
+from objet import genere_dico_objet
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -46,6 +47,7 @@ class Jeu:
         curses.curs_set(0)  # N'affiche pas le curseur
         #  Initialisation des niveaux du jeu
         self.niveaux = [Niveau(self)]
+        self.dico_objet = genere_dico_objet()
 
         ####
         # Bindings
@@ -55,6 +57,7 @@ class Jeu:
         self.bindings["k"] = self.perso.monte
         self.bindings["l"] = self.perso.droite
         self.bindings["h"] = self.perso.gauche
+        self.bindings["i"] = self.perso.affiche_inventaire
         self.bindings["q"] = self.fin
 
         ####
@@ -117,8 +120,8 @@ Voulez vous commencer une partie ? (o/n)")
         Méthode basique affichant une chaine de caractère
         sur le pad d'info : à droite du jeu
         """
+        self.pad_info.clear()
         self.pad_info.addstr(0, 0, chaine)
-        self.pad.clear()
         self.refresh()
 
     def oui_non(self, msg):
@@ -162,6 +165,7 @@ Voulez vous commencer une partie ? (o/n)")
         if key in self.bindings:
             if self.window.inch(0, 0) != " ":
                 self.window.addstr(0, 0, " " * 49)
+            self.pad_info.clear()
             self.refresh()
             self.bindings[key]()
 

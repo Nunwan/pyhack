@@ -15,6 +15,7 @@ class Personnage:
         self.mana = 100
         self.jeu = jeu
         self.niveau_en_cours = 0
+        self.bag_objet = dict()   # entrée : obj -> nb
 
     def affiche_perso(self):
         """
@@ -34,6 +35,12 @@ class Personnage:
         self.jeu.pad.addstr(self.position[1], self.position[0], self.jeu.niveaux[self.niveau_en_cours].reminder[(self.position[0], self.position[1])].car)
         self.jeu.refresh()
 
+    def affiche_inventaire(self):
+        debut = "Your inventory is : \n ############ \n Consommables \n ############ \n" 
+        dico_obj = self.jeu.dico_objet
+        inventaire = "\n".join(dico_obj[type(obj).__name__] +  ". "+ type(obj).__name__ + "  x " + str(nb) for obj, nb in self.bag_objet.items())
+        self.jeu.info(debut + inventaire)
+
     def __str__(self):
         return("Vous :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))
 
@@ -52,7 +59,7 @@ class Personnage:
             else:  # sinon fais le mouvement
                 self.jeu.msg(" ")
                 if isinstance(prochain, Objet):
-                    prochain.action(self)
+                    prochain.pick(self)
                 self.position = [vers_x, vers_y]
         self.affiche_perso()
 
