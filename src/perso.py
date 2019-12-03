@@ -35,7 +35,7 @@ class Personnage:
         self.jeu.refresh()
 
     def __str__(self):
-        return("Personnage :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))
+        return("Vous :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))
 
     # Fonction de déplacement
     def mouvement(self, vers_x, vers_y):

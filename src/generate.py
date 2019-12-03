@@ -11,7 +11,7 @@ from scipy.spatial import Delaunay
 MAX_TAILLE = 15
 MIN_TAILLE = 4
 # A décommenter ssi on debug
-seed(1234567890)
+seed(234567890)
 
 def intersection(salle1, salle2):
     """
@@ -38,9 +38,9 @@ def generate_dumb(jeu, number):
             width = randint(MIN_TAILLE, MAX_TAILLE)
             coin_hgauche = [randint(1, jeu.taille - width-2), randint(1, jeu.taille - height-2)]
             coin_bdroite = [coin_hgauche[0] + width, coin_hgauche[1] + height]
+            r = Salle(jeu, coin_hgauche, coin_bdroite)
             if coin_bdroite[0] == jeu.taille or coin_bdroite[1] == jeu.taille:
                 r = None
-            r = Salle(jeu, coin_hgauche, coin_bdroite)
         x_mid, y_mid = r.milieu()
         jeu.niveaux[jeu.perso.niveau_en_cours].salles[(x_mid, y_mid)] = r
         if j > pas:

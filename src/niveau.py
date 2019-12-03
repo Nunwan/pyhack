@@ -228,6 +228,11 @@ class Couloir:
                         dico[(coordonee_fixe, y+1)] = porte
                         dico[(coordonee_fixe, y)].portes.append(porte)
 
+    def place_porte_simple(self, dico, x, y, salle):
+        porte = Porte(self.jeu, x, y)
+        dico[(x, y)] = porte
+        salle.portes.append(porte)
+
     def genere_dico(self, dico):
         """
         Genere le dico pour un couloir :
@@ -238,26 +243,26 @@ class Couloir:
             self.salle2.genere_dico(dico)
         haute, basse = plus_haute_basse(self.salle1, self.salle2)  # Donne la plus haute/basse salle
         gauche, droite = plus_gauche_droite(self.salle1, self.salle2)  # Donne la plus à gauche, droite salle
-        y_1_dans_2 = self.salle2.coin_hgauche[1] < self.salle1.milieu()[1] < self.salle2.coin_bdroite[1]
-        y_2_dans_1 = self.salle1.coin_hgauche[1] < self.salle2.milieu()[1] < self.salle1.coin_bdroite[1]
-        x_1_dans_2 = self.salle2.coin_hgauche[0] < self.salle1.milieu()[0] < self.salle2.coin_bdroite[0]
-        x_2_dans_1 = self.salle1.coin_hgauche[0] < self.salle2.milieu()[0] < self.salle1.coin_bdroite[0]
-        if y_1_dans_2 and y_2_dans_1:
-            porte1 = Porte(self.jeu, gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
-            porte2 = Porte(self.jeu, droite.coin_hgauche[0] - 1, gauche.milieu()[1])
-            dico[(gauche.coin_bdroite[0] + 1, gauche.milieu()[1])] = porte1
-            dico[(droite.coin_hgauche[0] - 1, gauche.milieu()[1])] = porte2
-            gauche.portes.append(porte1)
-            droite.portes.append(porte2)
-            self.genere_ligne_droite(dico, True, gauche.milieu()[1], gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
-        elif x_1_dans_2 and x_2_dans_1:
-            porte1 = Porte(self.jeu, basse.milieu()[0], basse.coin_hgauche[1] - 1)
-            porte2 = Porte(self.jeu, basse.milieu()[0], haute.coin_bdroite[1] + 1)
-            dico[(basse.milieu()[0], basse.coin_hgauche[1] - 1)] = porte1
-            dico[(basse.milieu()[0], haute.coin_bdroite[1] + 1)] = porte2
-            basse.portes.append(porte1)
-            haute.portes.append(porte2)
-            self.genere_ligne_droite(dico, False, basse.milieu()[0], haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] - 1)
+        y_1_dans_2 = self.salle2.coin_hgauche[1] <= self.salle1.milieu()[1] <= self.salle2.coin_bdroite[1]
+        y_2_dans_1 = self.salle1.coin_hgauche[1] <= self.salle2.milieu()[1] <= self.salle1.coin_bdroite[1]
+        x_1_dans_2 = self.salle2.coin_hgauche[0] <= self.salle1.milieu()[0] <= self.salle2.coin_bdroite[0]
+        x_2_dans_1 = self.salle1.coin_hgauche[0] <= self.salle2.milieu()[0] <= self.salle1.coin_bdroite[0]
+        if y_1_dans_2:
+            self.place_porte_simple(dico, gauche.coin_bdroite[0] + 1, self.salle1.milieu()[1], gauche)
+            self.place_porte_simple(dico, droite.coin_hgauche[0] - 1, self.salle1.milieu()[1], droite)
+            self.genere_ligne_droite(dico, True, self.salle1.milieu()[1], gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
+        elif y_2_dans_1:
+            self.place_porte_simple(dico, gauche.coin_bdroite[0] + 1, self.salle2.milieu()[1], gauche)
+            self.place_porte_simple(dico, droite.coin_hgauche[0] - 1, self.salle2.milieu()[1], droite)
+            self.genere_ligne_droite(dico, True, self.salle2.milieu()[1], gauche.coin_bdroite[0] + 2, droite.coin_hgauche[0] - 1)
+        elif x_1_dans_2:
+            self.place_porte_simple(dico, self.salle1.milieu()[0], basse.coin_hgauche[1] - 1, basse)
+            self.place_porte_simple(dico, self.salle1.milieu()[0], haute.coin_bdroite[1] + 1, haute)
+            self.genere_ligne_droite(dico, False, self.salle1.milieu()[0], haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] - 1)
+        elif x_2_dans_1:
+            self.place_porte_simple(dico, self.salle2.milieu()[0], basse.coin_hgauche[1] - 1, basse)
+            self.place_porte_simple(dico, self.salle2.milieu()[0], haute.coin_bdroite[1] + 1, haute)
+            self.genere_ligne_droite(dico, False, self.salle2.milieu()[0], haute.coin_bdroite[1] + 2, basse.coin_hgauche[1] - 1)
         else:
             porte1 = Porte(self.jeu, gauche.coin_bdroite[0] + 1, gauche.milieu()[1])
             if gauche is basse:
