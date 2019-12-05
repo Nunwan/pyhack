@@ -3,7 +3,7 @@ Module gérant tout ce qui compose un personnage
 """
 
 from niveau import CAR, Porte
-from objet import Objet
+from objet import *
 
 class Personnage:
     """
@@ -38,8 +38,26 @@ class Personnage:
     def affiche_inventaire(self):
         debut = "Your inventory is : \n ############ \n Consommables \n ############ \n" 
         dico_obj = self.jeu.dico_objet
-        inventaire = "\n".join(dico_obj[type(obj).__name__] +  ". "+ type(obj).__name__ + "  x " + str(nb) for obj, nb in self.bag_objet.items())
+        inventaire = "\n".join(dico_obj[name] +  ". " + name + "  x " + str(nb) for name, nb in self.bag_objet.items())
         self.jeu.info(debut + inventaire)
+
+    def utilisation(self):
+        different = "".join(self.jeu.dico_objet[name] for name in self.bag_objet.keys())
+        self.jeu.msg("Que voulez vous utilisez ?  (" + different + ") ou i (inventaire)")
+        dico_objet_inv = {v: k for k, v in self.jeu.dico_objet.items()}
+        key = self.jeu.pad.getkey()
+        if key == "i":
+            self.affiche_inventaire()
+        elif key in dico_objet_inv:
+            name = dico_objet_inv[key]
+            if name in self.bag_objet and self.bag_objet[name] > 0:
+                globals()[name].action(self.jeu, self)
+                if self.bag_objet[name] == 1:
+                    del self.bag_objet[name]
+                else:
+                    self.bag_objet[name] -= 1
+        else:
+            self.jeu.msg("Cette objet n'est pas dans votre sac")
 
     def __str__(self):
         return("Vous :  {} PV | {} Mana | {} niveau".format(self.pv, self.mana, self.niveau_en_cours))

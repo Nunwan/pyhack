@@ -59,6 +59,7 @@ class Jeu:
         self.bindings["h"] = self.perso.gauche
         self.bindings["i"] = self.perso.affiche_inventaire
         self.bindings["q"] = self.fin
+        self.bindings["u"] = self.perso.utilisation
 
         ####
         # possibilité de log
@@ -67,6 +68,7 @@ class Jeu:
             date = datetime.datetime.now()
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
+
 
 
     def accueil(self):
@@ -109,9 +111,12 @@ Voulez vous commencer une partie ? (o/n)")
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 1, 0, raw - 1, column - 1)
         self.pad_info.refresh(0, 0, 2, 60, 20, 60 + 40)
+        self.window.refresh()
 
     def msg(self, chaine, override_limit=False):
-        if len(chaine) <=  50 or override_limit:
+        if len(chaine) <=  100 or override_limit:
+            self.window.addstr(0, 0, " " * 49)
+            self.refresh()
             self.window.addstr(0, 0, chaine)
             self.refresh()
 
@@ -163,8 +168,6 @@ Voulez vous commencer une partie ? (o/n)")
         key = self.window.getkey()
         self.window.addstr(26, 0, str(self.perso))
         if key in self.bindings:
-            if self.window.inch(0, 0) != " ":
-                self.window.addstr(0, 0, " " * 49)
             self.pad_info.clear()
             self.refresh()
             self.bindings[key]()
