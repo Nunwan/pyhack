@@ -50,19 +50,38 @@ class Objet:
         else:
             inv[nom] = 1
 
-class Potion(Objet):
+class Potion_Heal(Objet):
     """
     Classe décrivant les potions du jeu
     """
+    name = "Potion de soin"
     def __init__(self, x, y, jeu, salle):
         Objet.__init__(self, x, y, jeu, salle)
-        self.car = "p"
+        self.car = "h"
 
     def __str__(self):
-        return "p"
+        return "h"
 
     @staticmethod
     def action(jeu, perso):
         perso.pv += 10
         jeu.msg("Vous gagnez 10 PV")
+
+
+class Potion_Mana(Objet):
+    """
+    Classe décrivant les potions du jeu
+    """
+    name = "Potion de Mana"
+    def __init__(self, x, y, jeu, salle):
+        Objet.__init__(self, x, y, jeu, salle)
+        self.car = "m"
+
+    def __str__(self):
+        return "m"
+
+    @staticmethod
+    def action(jeu, perso):
+        perso.mana += 10
+        jeu.msg("Vous gagnez 10 Mana")
 

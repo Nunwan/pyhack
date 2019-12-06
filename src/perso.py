@@ -38,7 +38,7 @@ class Personnage:
     def affiche_inventaire(self):
         debut = "Your inventory is : \n ############ \n Consommables \n ############ \n" 
         dico_obj = self.jeu.dico_objet
-        inventaire = "\n".join(dico_obj[name] +  ". " + name + "  x " + str(nb) for name, nb in self.bag_objet.items())
+        inventaire = "\n".join(dico_obj[name] +  ". " + globals()[name].name + "  x " + str(nb) for name, nb in self.bag_objet.items())
         self.jeu.info(debut + inventaire)
 
     def utilisation(self):
