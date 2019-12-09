@@ -50,11 +50,19 @@ class Objet:
         else:
             inv[nom] = 1
 
+    def utilisation(self, perso):
+        for name in self.__dict__:
+            if name in perso.__dict__ and isinstance(self.__dict__[name], int):
+                perso.__dict__[name] += self.__dict__[name]
+
+
+
 class Potion_Heal(Objet):
     """
     Classe décrivant les potions du jeu
     """
     name = "Potion de soin"
+    pv = 10
     def __init__(self, x, y, jeu, salle):
         Objet.__init__(self, x, y, jeu, salle)
         self.car = "h"
@@ -62,9 +70,9 @@ class Potion_Heal(Objet):
     def __str__(self):
         return "h"
 
-    @staticmethod
-    def action(jeu, perso):
-        perso.pv += 10
+    @classmethod
+    def action(self, jeu, perso):
+        self.utilisation(self, perso)
         jeu.msg("Vous gagnez 10 PV")
 
 
@@ -73,6 +81,7 @@ class Potion_Mana(Objet):
     Classe décrivant les potions du jeu
     """
     name = "Potion de Mana"
+    mana = 10
     def __init__(self, x, y, jeu, salle):
         Objet.__init__(self, x, y, jeu, salle)
         self.car = "m"
@@ -80,8 +89,8 @@ class Potion_Mana(Objet):
     def __str__(self):
         return "m"
 
-    @staticmethod
-    def action(jeu, perso):
-        perso.mana += 10
+    @classmethod
+    def action(self, jeu, perso):
+        self.utilisation(self, perso)
         jeu.msg("Vous gagnez 10 Mana")
 
