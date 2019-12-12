@@ -38,22 +38,23 @@ class Personnage:
     def affiche_inventaire(self):
         debut = "Your inventory is : \n ############ \n Consommables \n ############ \n" 
         dico_obj = self.jeu.dico_objet
-        inventaire = "\n".join(dico_obj[name] +  ". " + globals()[name].name + "  x " + str(nb) for name, nb in self.bag_objet.items())
+        inventaire = "\n".join(dico_obj[nom].car +  ". " + dico_obj[nom].name + "  x " + str(nb) for nom, nb in self.bag_objet.items())
         self.jeu.info(debut + inventaire)
 
     def utilisation(self):
-        different = "".join(self.jeu.dico_objet[name] for name in self.bag_objet.keys())
+        different = "".join(self.jeu.dico_objet[name].car for name in self.bag_objet.keys())
         self.jeu.msg("Que voulez vous utilisez ?  (" + different + ") ou i (inventaire)")
-        dico_objet_inv = {v: k for k, v in self.jeu.dico_objet.items()}
+        dico_objet_inv = {value.car:value.name for value in self.jeu.dico_objet.values()}
         key = self.jeu.pad.getkey()
         if key == "i":
             self.affiche_inventaire()
         elif key in dico_objet_inv:
             name = dico_objet_inv[key]
             if name in self.bag_objet and self.bag_objet[name] > 0:
-                globals()[name].action(self.jeu, self)
+                self.jeu.dico_objet[name].utilisation(self)
                 if self.bag_objet[name] == 1:
                     del self.bag_objet[name]
+                    del self.jeu.dico_objet[name]
                 else:
                     self.bag_objet[name] -= 1
         else:

@@ -6,7 +6,8 @@ niveaux du jeu
 """
 
 from random import randint, random, choice
-from objet import liste_objet
+from objet import Consommable
+from xml_objet import iter_attribut_element, def_element, XML_File
 
 # Dictionnaire de l'affichage
 CAR = dict()
@@ -23,6 +24,8 @@ MIN_TAILLE = 4
 
 CHAMP_DE_VISION = 2
 
+
+
 class Salle:
     """
     Classe représentant une salle du jeu
@@ -38,18 +41,27 @@ class Salle:
         self.car = "."  # caractère du sol d'une salle
         self.jeu = jeu
         self.objets = dict()
-        self.genere_objet()
+        self.genere_consommable()
+    
+    @staticmethod
+    def genere_liste_objet():
+        xml_objet = XML_File('../data/objet.xml')
+        L = []
+        for child in xml_objet.root:
+            rarete = int(child.find('rareté').text)
+            if random() <= 1/rarete:
+                L.append(child)
+        return L
 
-    def genere_objet(self):
-        liste = liste_objet()
-        nombre = randint(0, 2)
-        if random() > 0.9:
-            nombre = randint(1, 5)
-        for ind in range(nombre):
-            objet = choice(liste)
+    def genere_consommable(self):
+        objets = self.genere_liste_objet()
+        for objet in objets:
             x = randint(self.coin_hgauche[0], self.coin_bdroite[0])
             y = randint(self.coin_hgauche[1], self.coin_bdroite[1])
-            new_obj = objet(self.jeu, x, y, self)
+            caracteristique = iter_attribut_element(objet)
+            attrib = def_element(objet)
+            name, car = attrib['name'], attrib['car']
+            new_obj = Consommable(self.jeu, x, y, self, name, car, caracteristique)
             if (x, y) not in self.objets:
                 self.objets[(x, y)] = new_obj
 

@@ -2,12 +2,11 @@
 Module gérant la génération des niveaux
 """
 
-
-from random import randint, choice, seed
-from niveau import Salle, Couloir
 from scipy.spatial import Delaunay
-#from jeu import Jeu
+from random import randint, choice, seed, random
+from niveau import Salle, Couloir
 
+#Variables globales de génaration
 MAX_TAILLE = 15
 MIN_TAILLE = 4
 # A décommenter ssi on debug
@@ -86,3 +85,6 @@ def delaunay(jeu):
             couloirs[(p2, p3)] = Couloir(jeu, salles[milieux[p2]], salles[milieux[p3]])
         if (p1, p3) not in couloirs and (p3, p1) not in couloirs:
             couloirs[(p1, p3)] = Couloir(jeu, salles[milieux[p1]], salles[milieux[p3]])
+
+
+

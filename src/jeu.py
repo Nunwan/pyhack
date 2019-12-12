@@ -47,7 +47,7 @@ class Jeu:
         curses.curs_set(0)  # N'affiche pas le curseur
         #  Initialisation des niveaux du jeu
         self.niveaux = [Niveau(self)]
-        self.dico_objet = genere_dico_objet()
+        self.dico_objet = dict()
 
         ####
         # Bindings
@@ -115,7 +115,7 @@ Voulez vous commencer une partie ? (o/n)")
 
     def msg(self, chaine, override_limit=False):
         if len(chaine) <=  100 or override_limit:
-            self.window.addstr(0, 0, " " * 49)
+            self.window.addstr(0, 0, " " * 50)
             self.refresh()
             self.window.addstr(0, 0, chaine)
             self.refresh()

@@ -18,23 +18,33 @@ class XML_File:
         self.tree = ET.parse(path)
         self.root = self.tree.getroot()
 
-    def recherche_objet(self, type_objet, name):
+    def recherche_objet(self, name):
         """
         Renvoie l'élément dont le tag est type_objet et le nom est name
         """
-        return next(element for element in self.root.iter(type_objet) if element.attrib['name'] == name)
+        return next(element for element in self.root if element.attrib['name'] == name)
 
-    def iter_attribut(self, type_objet, name):
+    def def_objet(self, name):
+        """
+        Renvoie les attributs direct de l'objet ici le dict avec nom et car
+        """
+        return self.recherche_objet(name).attrib
+
+
+    def iter_attribut(self, name):
         """
         Renvoie un itérateur sur les enfants de l'élément cherché
         """
-        objet = self.recherche_objet(type_objet, name)
+        objet = self.recherche_objet(name)
         for child in objet:
             yield child.tag, child.text
 
 
+def iter_attribut_element(element):
+    for child in element:
+        yield child.tag, child.text
 
-if __name__ == "__main__":
-    file = XML_File('../data/objet.xml')
-    for a,b in file.iter_attribut('potion', "Potion de soin"):
-        print(a,b)
+def def_element(element):
+    return element.attrib
+
+
