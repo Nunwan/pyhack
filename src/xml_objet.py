@@ -41,10 +41,16 @@ class XML_File:
 
 
 def iter_attribut_element(element):
+    """
+    Itère sur les attributs d'un élément XML donné
+    """
     for child in element:
         yield child.tag, child.text
 
 def def_element(element):
+    """
+    Retourne la définition de notre élément
+    """
     return element.attrib
 
 

@@ -9,10 +9,9 @@ Autant l'affichage que la donnée du personnage chose peut être
 import datetime
 import curses
 import os
-from niveau import Niveau, CAR
+from niveau import Niveau
 from perso import Personnage
 from generate import generate_dumb, delaunay
-from objet import genere_dico_objet
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -114,6 +113,9 @@ Voulez vous commencer une partie ? (o/n)")
         self.window.refresh()
 
     def msg(self, chaine, override_limit=False):
+        """
+        Affiche la chaine donnée sur la première ligne du jeu
+        """
         if len(chaine) <=  100 or override_limit:
             self.window.addstr(0, 0, " " * 50)
             self.refresh()
@@ -130,6 +132,9 @@ Voulez vous commencer une partie ? (o/n)")
         self.refresh()
 
     def oui_non(self, msg):
+        """
+        Demande une confirmation
+        """
         self.msg(msg, True)
         key = self.window.getkey()
         while key != "o" and key != "n":
@@ -171,4 +176,3 @@ Voulez vous commencer une partie ? (o/n)")
             self.pad_info.clear()
             self.refresh()
             self.bindings[key]()
-

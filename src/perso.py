@@ -37,12 +37,20 @@ class Personnage:
         self.jeu.refresh()
 
     def affiche_inventaire(self):
+        """
+        Affiche l'inventaire aka :
+        identifiant. Nom objet x nb_objet
+        """
         debut = "Your inventory is : \n ############ \n Consommables \n ############ \n"
         dico_obj = self.jeu.dico_objet
         inventaire = "\n".join(chr(97 + ind) +  ". " + dico_obj[nom].name + "  x " + str(nb) for ind, (nom, nb) in enumerate(self.bag_objet.items()))
         self.jeu.info(debut + inventaire)
 
     def utilisation(self):
+        """
+        Demande quel objet veut être utiliser et l'utilise.
+        Il faut préciser l'identifiant de l'objet dans le sac.
+        """
         n = len(self.bag_objet)
         liste_ind = [chr(97+i) for i in range(n)]
         if n > 7:

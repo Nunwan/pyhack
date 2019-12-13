@@ -1,32 +1,18 @@
 """
 Module gérant les objets et leur interaction
 """
-from inspect import getmembers, isclass
-import sys
-current_module = sys.modules[__name__]
 
-
-def liste_objet():
-    """
-    Renvoie la liste des sous_objets présents dans le module
-    """
-    L = []
-    for name, obj in getmembers(sys.modules[__name__]):
-        if isclass(obj) and name != "Objet":
-            L.append(obj)
-    return L
-
-def genere_dico_objet():
-    dico = dict()
-    for objet in liste_objet():
-        dico[objet.__name__] = str(objet.__str__(objet))
-    return dico
 
 class Objet:
     """
     Classe gérant les objets
     """
     def __init__(self, jeu, x, y, salle):
+        """
+        Construit un objet faisant parti de jeu en position
+        (x,y) dans la salle salle.
+        Les caracteristique de l'objet sont dans son dico
+        """
         self.salle = salle
         self.x = x
         self.y = y
@@ -39,9 +25,16 @@ class Objet:
         return "o"
 
     def affiche(self, x, y, jeu):
+        """
+        Affiche la salle autour de l'objet
+        """
         self.salle.affiche(self.salle.milieu()[0], self.salle.milieu()[1], 0)
 
     def pick(self, perso):
+        """
+        Prend un objet et le met dans l'inventaire de perso.
+        L'enlève de l'affichage
+        """
         niveau = self.jeu.niveaux[self.jeu.perso.niveau_en_cours]
         niveau.reminder[(self.x, self.y)] = self.salle
         total_obj = len(perso.bag_objet)
@@ -59,15 +52,14 @@ class Objet:
                 self.jeu.dico_objet[nom] = self
             self.jeu.msg("Vous avez recupéré : " + nom)
 
-    #def utilisation(self, perso):
-    #    for name in self.__dict__:
-    #        if name in perso.__dict__ and isinstance(self.__dict__[name], int):
-    #            perso.__dict__[name] += self.__dict__[name]
-
     def utilisation(self, perso):
+        """
+        Utilse l'objet en rajoutant les attributs de celui-ci
+        à perso
+        """
         for name, value in self.caracteristique.items():
-            if name in perso.__dict__ and isinstance(value, type(perso.__dict__ [name])):
-                perso.__dict__[name] += value
+            if name in perso.__dict__ and isinstance(value, type(perso.__dict__[name])):
+                perso.__dict__[name] += value  # Obligé d'appeler __dict__ pour changer les attributs de perso
 
 
 class Consommable(Objet):
@@ -81,5 +73,3 @@ class Consommable(Objet):
         if iterable_caracteristique:
             for nom, value in iterable_caracteristique:
                 self.caracteristique[nom] = int(value)
-
-

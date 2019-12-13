@@ -42,9 +42,13 @@ class Salle:
         self.jeu = jeu
         self.objets = dict()
         self.genere_consommable()
-    
+
     @staticmethod
     def genere_liste_objet():
+        """
+        Genere une liste d'objet à partir des objets du fichier XML
+        en fonction de leur rareté respective.
+        """
         xml_objet = XML_File('../data/objet.xml')
         L = []
         for child in xml_objet.root:
@@ -54,6 +58,9 @@ class Salle:
         return L
 
     def genere_consommable(self):
+        """
+        Genere les objets et les places à partir de la liste précédemment donnée.
+        """
         objets = self.genere_liste_objet()
         for objet in objets:
             x = randint(self.coin_hgauche[0], self.coin_bdroite[0])
@@ -66,6 +73,9 @@ class Salle:
                 self.objets[(x, y)] = new_obj
 
     def affiche_objet(self):
+        """
+        Affiche tous les objets d'une salle
+        """
         for objet in self.objets.values():
             self.jeu.pad.addstr(objet.y, objet.x, objet.car)
 
@@ -241,6 +251,9 @@ class Couloir:
                         dico[(coordonee_fixe, y)].portes.append(porte)
 
     def place_porte_simple(self, dico, x, y, salle):
+        """
+        Place une porte d'une salle en les coord x,y
+        """
         porte = Porte(self.jeu, x, y)
         dico[(x, y)] = porte
         salle.portes.append(porte)
@@ -329,8 +342,6 @@ class Porte:
                 if (x, y - 1) in reminder:
                     reminder[(x, y - 1)].affiche(x, y - 1, passe + 1)
         self.jeu.refresh()
-
-
 
 
 class Niveau:
