@@ -12,6 +12,7 @@ import os
 from niveau import Niveau
 from perso import Personnage
 from generate import generate_dumb, delaunay
+from create_perso import choix_race
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -82,6 +83,7 @@ Voulez vous commencer une partie ? (o/n)")
             self.perso.monte()
         else:
             self.fin(True)
+        choix_race(self)
 
     def generate_niveau(self):
         """
