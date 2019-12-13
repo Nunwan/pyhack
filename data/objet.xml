@@ -11,5 +11,6 @@
 	<potion name="Gros Streak" car="a">
 		<rareté>10</rareté>
 		<pv>50</pv>
+		<mana>10</mana>
 	</potion>
 </objet>

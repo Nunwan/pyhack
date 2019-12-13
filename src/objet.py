@@ -60,6 +60,8 @@ class Objet:
         for name, value in self.caracteristique.items():
             if name in perso.__dict__ and isinstance(value, type(perso.__dict__[name])):
                 perso.__dict__[name] += value  # Obligé d'appeler __dict__ pour changer les attributs de perso
+        recu = " et ".join(str(value) + " " + name for name, value in self.caracteristique.items() if name in perso.__dict__)
+        self.jeu.msg("Vous avez reçu : " + recu)
 
 
 class Consommable(Objet):

@@ -117,7 +117,7 @@ Voulez vous commencer une partie ? (o/n)")
         Affiche la chaine donnée sur la première ligne du jeu
         """
         if len(chaine) <=  100 or override_limit:
-            self.window.addstr(0, 0, " " * 50)
+            self.window.addstr(0, 0, " " * 51)
             self.refresh()
             self.window.addstr(0, 0, chaine)
             self.refresh()

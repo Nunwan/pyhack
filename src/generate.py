@@ -10,7 +10,7 @@ from niveau import Salle, Couloir
 MAX_TAILLE = 15
 MIN_TAILLE = 4
 # A décommenter ssi on debug
-seed(234567890)
+#seed(234567890)
 
 def intersection(salle1, salle2):
     """
