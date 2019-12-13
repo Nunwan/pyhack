@@ -9,7 +9,7 @@ Autant l'affichage que la donnée du personnage chose peut être
 import datetime
 import curses
 import os
-from niveau import Niveau, CAR
+from niveau import Niveau
 from perso import Personnage
 from generate import generate_dumb, delaunay
 
@@ -45,7 +45,8 @@ class Jeu:
         curses.cbreak()  # laisse le buffer vide
         curses.curs_set(0)  # N'affiche pas le curseur
         #  Initialisation des niveaux du jeu
-        self.niveaux = [Niveau()]
+        self.niveaux = [Niveau(self)]
+        self.dico_objet = dict()
 
         ####
         # Bindings
@@ -55,7 +56,9 @@ class Jeu:
         self.bindings["k"] = self.perso.monte
         self.bindings["l"] = self.perso.droite
         self.bindings["h"] = self.perso.gauche
+        self.bindings["i"] = self.perso.affiche_inventaire
         self.bindings["q"] = self.fin
+        self.bindings["u"] = self.perso.utilisation
 
         ####
         # possibilité de log
@@ -64,6 +67,7 @@ class Jeu:
             date = datetime.datetime.now()
             self.logfile = open("log_" + str(date) + ".txt", 'w')
             self.logfile.write("######  Logfile generate by pyhack")
+
 
 
     def accueil(self):
@@ -106,9 +110,15 @@ Voulez vous commencer une partie ? (o/n)")
         # Log : self.pad.addstr(cam_haut_y, cam_haut_x, str(self.perso))
         self.pad.refresh(cam_haut_y, cam_haut_x, 1, 0, raw - 1, column - 1)
         self.pad_info.refresh(0, 0, 2, 60, 20, 60 + 40)
+        self.window.refresh()
 
     def msg(self, chaine, override_limit=False):
-        if len(chaine) <=  50 or override_limit:
+        """
+        Affiche la chaine donnée sur la première ligne du jeu
+        """
+        if len(chaine) <=  100 or override_limit:
+            self.window.addstr(0, 0, " " * 51)
+            self.refresh()
             self.window.addstr(0, 0, chaine)
             self.refresh()
 
@@ -117,11 +127,14 @@ Voulez vous commencer une partie ? (o/n)")
         Méthode basique affichant une chaine de caractère
         sur le pad d'info : à droite du jeu
         """
+        self.pad_info.clear()
         self.pad_info.addstr(0, 0, chaine)
-        self.pad.clear()
         self.refresh()
 
     def oui_non(self, msg):
+        """
+        Demande une confirmation
+        """
         self.msg(msg, True)
         key = self.window.getkey()
         while key != "o" and key != "n":
@@ -158,9 +171,8 @@ Voulez vous commencer une partie ? (o/n)")
         Fonction appelé par la boucle de jeu pour lire le clavier
         """
         key = self.window.getkey()
+        self.window.addstr(26, 0, str(self.perso))
         if key in self.bindings:
-            if self.window.inch(0,0) != " ":
-                self.window.addstr(0, 0, " " * 49)
+            self.pad_info.clear()
             self.refresh()
             self.bindings[key]()
-

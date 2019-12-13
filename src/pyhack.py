@@ -18,7 +18,7 @@ def main():
     jeu.generate_niveau()
     jeu.accueil()
     #for salle in jeu.niveaux[jeu.perso.niveau_en_cours].salles.values():
-    #    salle.affiche(jeu, salle.milieu()[0], salle.milieu()[1], 0)
+    #    salle.affiche(salle.milieu()[0], salle.milieu()[1], 0)
     while not jeu.stop:  # Tant que le jeu ne doit pas s'arreter attend un appel clavier
         jeu.step()
 
