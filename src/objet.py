@@ -44,15 +44,20 @@ class Objet:
     def pick(self, perso):
         niveau = self.jeu.niveaux[self.jeu.perso.niveau_en_cours]
         niveau.reminder[(self.x, self.y)] = self.salle
-        del self.salle.objets[(self.x, self.y)]
-        inv = perso.bag_objet
-        nom = self.name
-        if nom in inv:
-            inv[nom] =  inv[nom] + 1
+        total_obj = len(perso.bag_objet)
+        if total_obj > 25:
+            self.jeu.msg("Votre inventaire est plein")
         else:
-            inv[nom] = 1
-        if nom not in self.jeu.dico_objet:
-            self.jeu.dico_objet[nom] = self
+            del self.salle.objets[(self.x, self.y)]
+            inv = perso.bag_objet
+            nom = self.name
+            if nom in inv:
+                inv[nom] =  inv[nom] + 1
+            else:
+                inv[nom] = 1
+            if nom not in self.jeu.dico_objet:
+                self.jeu.dico_objet[nom] = self
+            self.jeu.msg("Vous avez recupéré : " + nom)
 
     #def utilisation(self, perso):
     #    for name in self.__dict__:

@@ -4,6 +4,7 @@ Module gérant tout ce qui compose un personnage
 
 from niveau import CAR, Porte
 from objet import *
+from tools import get_n_dict
 
 class Personnage:
     """
@@ -36,27 +37,32 @@ class Personnage:
         self.jeu.refresh()
 
     def affiche_inventaire(self):
-        debut = "Your inventory is : \n ############ \n Consommables \n ############ \n" 
+        debut = "Your inventory is : \n ############ \n Consommables \n ############ \n"
         dico_obj = self.jeu.dico_objet
-        inventaire = "\n".join(dico_obj[nom].car +  ". " + dico_obj[nom].name + "  x " + str(nb) for nom, nb in self.bag_objet.items())
+        inventaire = "\n".join(chr(97 + ind) +  ". " + dico_obj[nom].name + "  x " + str(nb) for ind, (nom, nb) in enumerate(self.bag_objet.items()))
         self.jeu.info(debut + inventaire)
 
     def utilisation(self):
-        different = "".join(self.jeu.dico_objet[name].car for name in self.bag_objet.keys())
-        self.jeu.msg("Que voulez vous utilisez ?  (" + different + ") ou i (inventaire)")
-        dico_objet_inv = {value.car:value.name for value in self.jeu.dico_objet.values()}
+        n = len(self.bag_objet)
+        liste_ind = [chr(97+i) for i in range(n)]
+        if n > 7:
+            liste_ind = [chr(97+i) for i in range(7)] + [chr(97+i+1) for i in range(7, n)]
+        self.jeu.msg("Que voulez vous utilisez ?  (" + "".join(liste_ind) + ") ou i (inventaire)")
         key = self.jeu.pad.getkey()
         if key == "i":
             self.affiche_inventaire()
-        elif key in dico_objet_inv:
-            name = dico_objet_inv[key]
-            if name in self.bag_objet and self.bag_objet[name] > 0:
-                self.jeu.dico_objet[name].utilisation(self)
-                if self.bag_objet[name] == 1:
-                    del self.bag_objet[name]
-                    del self.jeu.dico_objet[name]
+        elif key in liste_ind:
+            cle_obj = get_n_dict(self.bag_objet, ord(key) - 97)
+            if ord(key) - 97 > 7:
+                cle_obj = get_n_dict(self.bag_objet, ord(key) - 97 - 1)
+            nb_objet = self.bag_objet[cle_obj]
+            if nb_objet > 0:
+                self.jeu.dico_objet[cle_obj].utilisation(self)
+                if nb_objet == 1:
+                    del self.bag_objet[cle_obj]
+                    del self.jeu.dico_objet[cle_obj]
                 else:
-                    self.bag_objet[name] -= 1
+                    self.bag_objet[cle_obj] -= 1
         else:
             self.jeu.msg("Cette objet n'est pas dans votre sac")
 

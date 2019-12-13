@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <objet>
-	<potion name="Potion de soin" car="s">
+	<potion name="Potion de soin" car="p">
 		<rareté>5</rareté>
 		<pv>10</pv>
 	</potion>
-	<potion name="Potion de mana" car="m">
+	<potion name="Potion de mana" car="p">
 		<rareté>5</rareté>
 		<mana>10</mana>
 	</potion>
-	<potion name="Gros Streak" car="G">
+	<potion name="Gros Streak" car="a">
 		<rareté>10</rareté>
 		<pv>50</pv>
 	</potion>
