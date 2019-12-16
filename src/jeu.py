@@ -83,7 +83,7 @@ Voulez vous commencer une partie ? (o/n)")
             self.perso.monte()
         else:
             self.fin(True)
-        choix_race(self)
+        #choix_race(self)
 
     def generate_niveau(self):
         """

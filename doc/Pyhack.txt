@@ -39,6 +39,4 @@ Il n'y a pour le moment pas de règles précises :
 Vous pouvez donc dans cet alpha parcourir le donjon et ramasser des objets.
 
 
-
-
-
+Il existe des portes bloquées qui auront des clés dans les versions futures
