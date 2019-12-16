@@ -1,0 +1,40 @@
+######################
+    Explication de certaines fonctions
+######################
+
+- Générations des salles et couloir
+
+Les salles sont générées de façon idiote mais qui fonctionne. On crée 20 salles les unes après les autres
+telles que chacune n'est aucune intersection avec les autres. Si on arrive pas à créer une telle salle on
+recommence et on abandonne après un nombre d'essais donné. Les salles font entre 4 et 15 de longueur/largeur.
+
+On calcule ensuite les milieux des salles et avec ces milieux on effectue une triangulation de Delaunay. En théorie on fait souvent
+un chemin minimal par Kruskal ensuite mais je ne l'ai pas fait car trop de couloirs permet d'avoir des doubles couloirs
+et d'en éliminer parfois. Ainsi j'ai pu utliser certains cas pour rajouter du gameplay :
+- Les doubles couloirs font des couloirs plus larges
+- Parfois un couloir essaye de traverser un mur je l'arrete donc et cela crée une impasse.
+
+Ces couloirs sont générés comme tels :
+- si le milieu de l'un est dans la salle de l'autre en x ou en y je trace un chemin tout droit
+- sinon je trace un chemin en L en prenant garde aux portes : fonctions qui est la plus degeu mais que je n'ai pas encore essayé d'optimiser
+sur son écriture. Je l'ai néanmoins commenté.
+- Pour les portes afin d'être sur que je n'ai pas de bug, je repasse sur toutes les portes et vérifie leur utilité sinon je la supprime.
+(même si cela me coute cher je prefère)
+
+
+Les fichiers txt et xml dans data servent à sauvegarder mes informations comme :
+- les msg de création de personnage avec race et classes plus tard.
+- les caractéristiques des objets dans objets.xml
+
+Les fichiers sont comme tels:
+- XMl_objet est une classe Xml_File permettant de lire le XML comme je l'entend
+- jeu.py gère le jeu dans son ensemble et le graphisme
+- niveau.py gère tout ce qui concerne un niveau : salle, couloir, porte ainsi que leur génération et affichage
+- objet.py gère les classes d'objets
+- generate.py s'occupe de la génération aléatoire des salles/objets ...
+- perso.py s'occupe du personnage et ses caractéristiques, déplacements ...
+- create_perso est et sera ce qui gère la création de mon personnage : race, classe, affiliation, sort ...
+- tools.py comporte des petits outils utiles.
+
+
+Dans le dossier tests se trouve plein de petits tests que je laisse ici.
