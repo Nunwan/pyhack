@@ -12,6 +12,7 @@ import os
 from niveau import Niveau
 from perso import Personnage
 from generate import generate_dumb, delaunay
+from create_perso import choix_race
 
 ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
 
@@ -82,6 +83,7 @@ Voulez vous commencer une partie ? (o/n)")
             self.perso.monte()
         else:
             self.fin(True)
+        #choix_race(self)
 
     def generate_niveau(self):
         """
@@ -92,6 +94,7 @@ Voulez vous commencer une partie ? (o/n)")
         delaunay(self)
         self.niveaux[self.perso.niveau_en_cours].genere_dico()
         #self.niveaux[self.perso.niveau_en_cours].place_all_porte()
+        self.niveaux[self.perso.niveau_en_cours].verifie_porte()
 
     def refresh(self):
         """
@@ -116,7 +119,7 @@ Voulez vous commencer une partie ? (o/n)")
         """
         Affiche la chaine donnée sur la première ligne du jeu
         """
-        if len(chaine) <=  100 or override_limit:
+        if len(chaine) <= 100 or override_limit:
             self.window.addstr(0, 0, " " * 51)
             self.refresh()
             self.window.addstr(0, 0, chaine)

@@ -12,11 +12,13 @@ class Personnage:
     """
     def __init__(self, jeu):
         self.position = [0, 0]
-        self.pv = 100
-        self.mana = 100
         self.jeu = jeu
         self.niveau_en_cours = 0
-        self.bag_objet = dict()   # entrée : obj -> nb
+        self.pv = 100
+        self.mana = 100
+        self.force, self.dexterite, self.constitution = 0, 0, 0
+        self.sagesse, self.charisme, self.intelligence = 0, 0, 0
+        self.bag_objet = dict()   # entrée : name -> nb
 
     def affiche_perso(self):
         """

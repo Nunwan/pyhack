@@ -39,6 +39,9 @@ class XML_File:
         for child in objet:
             yield child.tag, child.text
 
+    def __iter__(self):
+        return self.root
+
 
 def iter_attribut_element(element):
     """

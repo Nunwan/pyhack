@@ -24,6 +24,26 @@ MIN_TAILLE = 4
 
 CHAMP_DE_VISION = 2
 
+def voisins_objet(x, y, dico):
+    """
+    Générateur sur les voisins objets de dico
+    return None si aucun objet est du coté
+    """
+    pred_1 = (x, y+1) in dico
+    pred_2 = (x, y-1) in dico
+    pred_3 = (x+1, y) in dico
+    pred_4 = (x-1, y) in dico
+    if not (pred_1 or pred_2 or pred_3 or pred_4):
+        return
+    if pred_1:
+        yield dico[(x, y+1)]
+    if pred_2:
+        yield dico[(x, y-1)]
+    if pred_3:
+        yield dico[(x+1, y)]
+    if pred_4:
+        yield dico[(x-1, y)]
+
 
 
 class Salle:
@@ -152,6 +172,13 @@ class Salle:
         """
         for porte in self.portes:
             dico[(porte.x, porte.y)] = porte
+
+    def verifie_porte(self, dico):
+        """
+        vérifie toutes les portes de la salle
+        """
+        for porte in self.portes:
+            porte.verifie(dico, self)
 
 def plus_haute_basse(salle1, salle2):
     """
@@ -305,7 +332,7 @@ class Couloir:
                 self.genere_ligne_droite(dico, False, droite.milieu()[0], droite.coin_bdroite[1] + 2, gauche.milieu()[1] + 1)
             else:
                 self.genere_ligne_droite(dico, False, droite.milieu()[0], gauche.milieu()[1], droite.coin_hgauche[1] - 1)
-
+    
 
 class Porte:
     """
@@ -343,6 +370,30 @@ class Porte:
                     reminder[(x, y - 1)].affiche(x, y - 1, passe + 1)
         self.jeu.refresh()
 
+    def verifie(self, dico, salle):
+        """
+        Verifie que la porte est effective : elle est liée à un couloir
+        permet de s'assurer qu'il n'y pas de bug de placement.
+        Couteux mais plus agréable
+        """
+        voisins = voisins_objet(self.x, self.y, dico)
+        if (self.x, self.y) not in dico:
+            return
+        if voisins is None:
+            self.supprime(dico, salle)
+            print("caca")
+        else:
+            if not any(isinstance(voisin, Couloir) for voisin in voisins_objet(self.x, self.y, dico)):
+                self.supprime(dico, salle)
+                print("coco")
+
+    def supprime(self, dico, salle):
+        """
+        supprime la porte du jeu
+        """
+        del dico[(self.x, self.y)]
+        salle.portes.remove(self)
+        del self
 
 class Niveau:
     """
@@ -366,6 +417,13 @@ class Niveau:
             salle.genere_dico(self.reminder)
         for couloir in self.couloirs.values():
             couloir.genere_dico(self.reminder)
+
+    def verifie_porte(self):
+        """
+        Vérifie toutes les portes
+        """
+        for salle in self.salles.values():
+            salle.verifie_porte(self.reminder)
 
     def place_all_porte(self):
         """

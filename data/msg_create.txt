@@ -1,0 +1,33 @@
+Choisis une race
+
+H - humain
+n - nain
+h - halfelin
+e - elfe
+g - gnome
+d - demi-orc
+D - demi-elfe
+
+q - Quit
+
+(end)
+
+Choisis une classe
+
+B - un Barbare
+b - un Barde
+d - un Druide
+e - un Ensorceleur
+g - un Guerrier
+m - un magicien
+M - un moine
+p - un Paladin
+P - un Prêtre
+r - un Rodeur
+R - un Roublard
+
+q - Quit
+
+(end)
+
+

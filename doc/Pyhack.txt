@@ -1,0 +1,42 @@
+######################################################################
+			Pyhack documentation
+			  Manuel du joueur
+######################################################################
+
+
+## Les symboles :
+
+- . représente tout sol sur lequel on peut se déplacer
+- | et - représentent les murs des sols.
+- @ est votre personnage
+- # représente un couloir
+- / représente une porte
+- p représente une potion
+- a représente de l'alimentation
+
+C'est tout pour le moment ...
+
+## Les touches :
+
+    |
+    k
+- h   l -
+    j
+    |
+
+représente les touches directionnelles.
+
+- i permet de voir l'inventaire
+- u d'utiliser un objet
+- q de quitter le jeu
+
+Pour chaque confirmation il faut utiliser "o" ou "n" pour dire oui ou non
+
+
+## Comment jouer :
+
+Il n'y a pour le moment pas de règles précises :
+Vous pouvez donc dans cet alpha parcourir le donjon et ramasser des objets.
+
+
+Il existe des portes bloquées qui auront des clés dans les versions futures
