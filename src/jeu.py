@@ -94,6 +94,7 @@ Voulez vous commencer une partie ? (o/n)")
         delaunay(self)
         self.niveaux[self.perso.niveau_en_cours].genere_dico()
         #self.niveaux[self.perso.niveau_en_cours].place_all_porte()
+        self.niveaux[self.perso.niveau_en_cours].verifie_porte()
 
     def refresh(self):
         """
@@ -118,7 +119,7 @@ Voulez vous commencer une partie ? (o/n)")
         """
         Affiche la chaine donnée sur la première ligne du jeu
         """
-        if len(chaine) <=  100 or override_limit:
+        if len(chaine) <= 100 or override_limit:
             self.window.addstr(0, 0, " " * 51)
             self.refresh()
             self.window.addstr(0, 0, chaine)
